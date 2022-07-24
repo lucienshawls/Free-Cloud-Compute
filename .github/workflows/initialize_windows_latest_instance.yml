@@ -1,0 +1,26 @@
+name: Initialize Windows-Latest Instance
+on:
+  workflow_dispatch:
+jobs:
+  init:
+    name: Initialize Windows-Latest Instance
+    runs-on: windows-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v2
+      - name: Config sshd and credentials for root
+        run: |
+          echo "change password"
+      - name: install n2n
+        run: |
+          echo "install n2n"
+      - name: launch n2n
+        env:
+          N2N_SERVER_ADDR: ${{ secrets.N2N_SERVER_ADDR }}
+          N2N_SERVER_PORT: ${{ secrets.N2N_SERVER_PORT }}
+          N2N_IP: ${{ secrets.N2N_IP }}
+          N2N_COMMUNITY_NAME: ${{ secrets.N2N_COMMUNITY_NAME }}
+          N2N_KEY: ${{ secrets.N2N_KEY }}
+        run: |
+          echo "sudo /usr/sbin/edge -c $N2N_COMMUNITY_NAME -l $N2N_SERVER_ADDR:$N2N_SERVER_PORT -a $N2N_IP -I GitHub-Actions -k $N2N_KEY -A3"
+          echo "sleep 6h"
