@@ -25,6 +25,4 @@ jobs:
           N2N_KEY: ${{ secrets.N2N_KEY }}
         run: |
           sudo /usr/sbin/edge -c $N2N_COMMUNITY_NAME -l $N2N_SERVER_ADDR:$N2N_SERVER_PORT -a $N2N_IP -I GitHub-Actions -k $N2N_KEY -A3
-
-
-
+          sleep 6h
