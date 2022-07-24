@@ -1,0 +1,11 @@
+Include /etc/ssh/sshd_config.d/*.conf
+Port 14122
+PermitRootLogin yes
+PasswordAuthentication yes
+PermitEmptyPasswords yes
+ChallengeResponseAuthentication no
+UsePAM no
+PrintMotd no
+X11Forwarding yes
+AcceptEnv LANG LC_*
+Subsystem sftp	/usr/lib/openssh/sftp-server
