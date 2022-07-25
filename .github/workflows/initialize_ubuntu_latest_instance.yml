@@ -31,4 +31,18 @@ jobs:
           N2N_KEY: ${{ secrets.N2N_KEY }}
         run: |
           sudo /usr/sbin/edge -c $N2N_COMMUNITY_NAME -l $N2N_SERVER_ADDR:$N2N_SERVER_PORT -a $N2N_IP -I GitHub-Actions -k $N2N_KEY -A3
-          sleep 6h
+      - name: Preparing dead-man trigger
+        run: |
+          sudo cp ./ubuntu/maintain.sh /root/
+          sudo chmod +x /root/maintain.sh
+          sudo touch /root/remove_me_for_self_destruct
+          sudo cp ./ubuntu/self_destruct.sh /root/
+          sudo chmod +x /root/self_destruct.sh
+          echo "Use either command to terminate after at most 1 minute:"
+          echo "sudo rm -f /root/remove_me_for_self_destruct"
+          echo "sudo /root/self_destruct.sh"
+          echo "Use this command if you regret within 1 minute:"
+          echo "sudo touch /root/remove_me_for_self_destruct"
+      - name: Maintaining
+        run: |
+          sudo /root/maintain.sh
