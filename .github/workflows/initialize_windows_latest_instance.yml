@@ -16,9 +16,13 @@ jobs:
       # - name: Modify password policy
       #   run: |
       #     secedit /configure /db gp.sdb /cfg .\p.inf /quiet
-      - name: New user
+      # - name: New user
+      #   run: |
+      #     net user root /add
+      #     net localgroup Administrators root /add
+      #     net user
+      - name: Activate Administrator
         run: |
-          net user root /add
-          net localgroup Administrators root /add
+          net user Administrator /active:yes
           net user
 
