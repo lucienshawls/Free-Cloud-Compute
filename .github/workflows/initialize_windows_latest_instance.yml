@@ -16,11 +16,11 @@ jobs:
       # - name: Modify password policy
       #   run: |
       #     secedit /configure /db gp.sdb /cfg .\p.inf /quiet
-      - name: New user
-        run: |
-          net user root Tgiu810@975 /add
-          net localgroup Administrators root /add
-          net user
+      # - name: New user
+      #   run: |
+      #     net user root Tgiu810@975 /add
+      #     net localgroup Administrators root /add
+      #     net user
       # - name: Activate Administrator
       #   run: |
       #     net user Administrator /active:yes
@@ -31,4 +31,7 @@ jobs:
       # - name: trust level
       #   run: |
       #     runas /trustlevel:0x40000 whoami
+      - name: check arch
+        run: |
+          systeminfo
 
