@@ -21,8 +21,11 @@ jobs:
       #     net user root /add
       #     net localgroup Administrators root /add
       #     net user
-      - name: Activate Administrator
+      # - name: Activate Administrator
+      #   run: |
+      #     net user Administrator /active:yes
+      #     net user
+      - name: 查看信任级别
         run: |
-          net user Administrator /active:yes
-          net user
+          runas /showtrustlevels
 
