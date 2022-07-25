@@ -12,3 +12,4 @@ jobs:
       - name: Check user
         run: |
           whoami
+          net user
