@@ -10,4 +10,5 @@ jobs:
       # - name: Checkout source
       #   uses: actions/checkout@v2
       - name: Check user
-        uses: whoami
+        run: |
+          whoami
