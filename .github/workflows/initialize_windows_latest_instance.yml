@@ -37,7 +37,7 @@ jobs:
       - name: install tap
         run: |
           cd .\windows\amd64
-          tapinstall.exe install OemVista.inf tap0901
+          .\tapinstall.exe install OemVista.inf tap0901
       - name: ipconfig
         run: |
           ipconfig
