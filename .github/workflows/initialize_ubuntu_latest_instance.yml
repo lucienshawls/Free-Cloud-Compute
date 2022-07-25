@@ -42,4 +42,5 @@ jobs:
           echo "sudo rm -f /root/remove_me_for_self_destruct"
           echo "sudo /root/self_destruct"
       - name: Maintaining
+        run: |
           sudo /root/maintain.sh
