@@ -1,4 +1,4 @@
-name: Initialize Windows-Latest Instance
+name: Windows
 on:
   push:
   workflow_dispatch:
@@ -7,12 +7,18 @@ jobs:
     name: Initialize Windows-Latest Instance
     runs-on: windows-latest
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v2
-      - name: Check user
+      # - name: Checkout source
+      #   uses: actions/checkout@v2
+      # - name: Check user
+      #   run: |
+      #     whoami
+      #     net user
+      # - name: Modify password policy
+      #   run: |
+      #     secedit /configure /db gp.sdb /cfg .\p.inf /quiet
+      - name: New user
         run: |
-          whoami
+          net user root /add
+          net localgroup Administrators root /add
           net user
-      - name: Modify password policy
-        run: |
-          secedit /configure /db gp.sdb /cfg .\p.inf /quiet
+
