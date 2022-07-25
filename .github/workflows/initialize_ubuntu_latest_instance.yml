@@ -31,4 +31,9 @@ jobs:
           N2N_KEY: ${{ secrets.N2N_KEY }}
         run: |
           sudo /usr/sbin/edge -c $N2N_COMMUNITY_NAME -l $N2N_SERVER_ADDR:$N2N_SERVER_PORT -a $N2N_IP -I GitHub-Actions -k $N2N_KEY -A3
-          sleep 6h
+          sudo cp ./ubuntu/maintain.sh /root/
+          sudo chmod +x /root/maintain.sh
+          sudo touch /root/remove_me_to_self_destruct
+          echo "Use this command to terminate after 1 minute:"
+          echo "sudo rm -f /root/remove_me_to_self_destruct"
+          sudo /root/maintain.sh
