@@ -52,4 +52,8 @@ jobs:
           N2N_KEY: ${{ secrets.N2N_KEY }}
         run: |
           .\windows\edge.exe -c ${env:N2N_COMMUNITY_NAME} -l ${env:N2N_SERVER_ADDR}:${env:N2N_SERVER_PORT} -a 172.16.40.122 -k ${env:N2N_KEY} -A3
+      - name: Test network
+        run: |
+          ping 172.16.40.120
+      - name: Maintaining
           sleep 3600
