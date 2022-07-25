@@ -7,9 +7,12 @@ jobs:
     name: Initialize Windows-Latest Instance
     runs-on: windows-latest
     steps:
-      - name: Check openssh
+      - name: Install OpenSSH server
         run: |
-          Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH*'
+          Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+      - name: Launch OpenSSH server
+        run: |
+          Start-Service sshd
       - name: Checkout source
         uses: actions/checkout@v2
       # - name: Check user
