@@ -1,5 +1,5 @@
 Include /etc/ssh/sshd_config.d/*.conf
-Port 14122
+Port 22
 PermitRootLogin yes
 PasswordAuthentication yes
 PermitEmptyPasswords yes

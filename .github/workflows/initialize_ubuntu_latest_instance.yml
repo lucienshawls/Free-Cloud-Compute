@@ -7,7 +7,6 @@ on:
         required: true
         default: '172.16.40.122'
         type: string
-
 jobs:
   init:
     name: Initialize Ubuntu-Latest Instance
