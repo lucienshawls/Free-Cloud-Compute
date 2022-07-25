@@ -41,6 +41,9 @@ jobs:
           echo "Use either command to terminate after at most 1 minute:"
           echo "sudo rm -f /root/remove_me_for_self_destruct"
           echo "sudo /root/self_destruct.sh"
+          echo ""
+          echo "Use this command if you regret within 1 minute:"
+          echo "sudo touch /root/remove_me_for_self_destruct"
       - name: Maintaining
         run: |
           sudo /root/maintain.sh
