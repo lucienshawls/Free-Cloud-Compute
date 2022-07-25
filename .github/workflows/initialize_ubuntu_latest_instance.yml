@@ -1,6 +1,13 @@
-name: Initialize Ubuntu-Latest Instance
+name: Ubuntu
 on:
   workflow_dispatch:
+    inputs:
+      n2n_ip:
+        description: 'Assign the local ip address for N2N edge:'
+        required: true
+        default: '172.16.40.122'
+        type: string
+
 jobs:
   init:
     name: Initialize Ubuntu-Latest Instance
@@ -13,14 +20,14 @@ jobs:
           sudo passwd -d root
           sudo cp -f ./ubuntu/sshd_config /etc/ssh/
           sudo systemctl restart sshd
-      - name: install n2n
+      - name: Install n2n
         run: |
           sudo dpkg -i ./ubuntu/n2n_3.0.0-1038_amd64.deb
-      - name: launch n2n
+      - name: Launch n2n
         env:
           N2N_SERVER_ADDR: ${{ secrets.N2N_SERVER_ADDR }}
           N2N_SERVER_PORT: ${{ secrets.N2N_SERVER_PORT }}
-          N2N_IP: ${{ secrets.N2N_IP }}
+          N2N_IP: ${{ inputs.n2n_ip }}
           N2N_COMMUNITY_NAME: ${{ secrets.N2N_COMMUNITY_NAME }}
           N2N_KEY: ${{ secrets.N2N_KEY }}
         run: |
