@@ -7,14 +7,16 @@ jobs:
     name: Initialize Windows-Latest Instance
     runs-on: windows-latest
     steps:
-      - name: Install OpenSSH server
-        run: |
-          Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
-      - name: Launch OpenSSH server
-        run: |
-          Start-Service sshd
       - name: Checkout source
         uses: actions/checkout@v2
+      - name: Install OpenSSH server
+        run: |
+          Expand-Archive -Path .\windows\OpenSSH-Win64.zip -DestinationPath .\windows\
+          cd .\windows\OpenSSH-Win64\
+          powershell.exe -ExecutionPolicy Bypass -File install-sshd.ps1
+      - name: Launch OpenSSH server
+        run: |
+          net start sshd
       # - name: Check user
       #   run: |
       #     whoami
