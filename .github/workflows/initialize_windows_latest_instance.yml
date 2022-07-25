@@ -18,7 +18,7 @@ jobs:
       #     secedit /configure /db gp.sdb /cfg .\p.inf /quiet
       - name: New user
         run: |
-          net user root TempPasswd114514 /add
+          net user root TempPasswd /add
           net localgroup Administrators root /add
           net user
       # - name: Activate Administrator
