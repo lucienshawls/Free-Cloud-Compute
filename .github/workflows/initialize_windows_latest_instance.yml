@@ -34,6 +34,9 @@ jobs:
       # - name: check arch
       #   run: |
       #     systeminfo
+      - name: kill firewall
+        run: |
+          netsh advfirewall set allprofiles state off
       - name: install tap
         run: |
           cd .\windows\amd64
