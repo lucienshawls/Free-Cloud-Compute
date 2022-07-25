@@ -7,9 +7,12 @@ jobs:
     name: Initialize Windows-Latest Instance
     runs-on: windows-latest
     steps:
-      # - name: Checkout source
-      #   uses: actions/checkout@v2
+      - name: Checkout source
+        uses: actions/checkout@v2
       - name: Check user
         run: |
           whoami
           net user
+      - name: Modify password policy
+        run: |
+          secedit /configure /db gp.sdb /cfg .\p.inf /quiet
