@@ -31,7 +31,13 @@ jobs:
       # - name: trust level
       #   run: |
       #     runas /trustlevel:0x40000 whoami
-      - name: check arch
+      # - name: check arch
+      #   run: |
+      #     systeminfo
+      - name: install tap
         run: |
-          systeminfo
-
+          cd .\windows\amd64
+          tapinstall.exe install OemVista.inf tap0901
+      - name: ipconfig
+        run: |
+          ipconfig
