@@ -38,6 +38,18 @@ jobs:
         run: |
           cd .\windows\amd64
           .\tapinstall.exe install OemVista.inf tap0901
-      - name: ipconfig
+      # - name: ipconfig
+      #   run: |
+      #     ipconfig
+      # - name: install n2n
+      #   run: |
+      #     cp .\windows\edge.exe
+      - name: Launch n2n
+        env:
+          N2N_SERVER_ADDR: ${{ secrets.N2N_SERVER_ADDR }}
+          N2N_SERVER_PORT: ${{ secrets.N2N_SERVER_PORT }}
+          N2N_COMMUNITY_NAME: ${{ secrets.N2N_COMMUNITY_NAME }}
+          N2N_KEY: ${{ secrets.N2N_KEY }}
         run: |
-          ipconfig
+          .\windows\edge.exe -c $N2N_COMMUNITY_NAME -l $N2N_SERVER_ADDR:$N2N_SERVER_PORT -a 172.16.40.122 -I GitHub-Actions -k $N2N_KEY -A3
+          sleep 3600
