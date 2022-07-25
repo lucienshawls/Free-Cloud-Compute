@@ -25,7 +25,10 @@ jobs:
       #   run: |
       #     net user Administrator /active:yes
       #     net user
-      - name: 查看信任级别
+      # - name: 查看信任级别
+      #   run: |
+      #     runas /showtrustlevels
+      - name: trust level
         run: |
-          runas /showtrustlevels
+          runas /trustlevel:0x40000 whoami
 
