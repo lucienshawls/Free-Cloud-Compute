@@ -30,6 +30,7 @@ jobs:
           brew tap homebrew/cask
           brew install --cask tunnelblick
       - name: Find
+        run: 
           sudo find / -name "tap.kext"
       # - name: Launch N2N
       #   env:
