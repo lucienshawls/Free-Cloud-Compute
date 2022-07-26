@@ -22,14 +22,14 @@ jobs:
       #   run: |
       #     sw_vers
       #     uname -a
-      # - name: Install tap
-      #   run: |
-      #     brew install --cask tunnelblick
       - name: Install tap
         run: |
-          brew tap homebrew/cask
-          brew install --cask tunnelblick
-          ls /Library/Extensions/tap.kext
+          brew install --cask tuntap
+      # - name: Install tap
+      #   run: |
+      #     brew tap homebrew/cask
+      #     brew install --cask tunnelblick
+      #     ls /Library/Extensions/tap.kext
       # - name: Launch N2N
       #   env:
       #     N2N_SUPERNODE_HOST: ${{ secrets.N2N_SUPERNODE_HOST }}
