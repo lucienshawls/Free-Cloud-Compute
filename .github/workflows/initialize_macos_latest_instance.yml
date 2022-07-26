@@ -33,6 +33,7 @@ jobs:
           N2N_KEY: ${{ secrets.N2N_KEY }}
           # N2N_IP: ${{ inputs.N2N_IP }}
         run: |
+          sudo chmod +x ./macos/edge
           sudo ./macos/edge -c $N2N_COMMUNITY -l $N2N_SUPERNODE_HOST:$N2N_SUPERNODE_PORT -a '172.16.40.121' -k $N2N_KEY -A3
       - name: Maintaining
         run: |
