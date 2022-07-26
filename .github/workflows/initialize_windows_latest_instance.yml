@@ -37,14 +37,6 @@ jobs:
         run: |
           cd .\windows\amd64
           .\tapinstall.exe install OemVista.inf tap0901
-      - name: Launch N2N
-        env:
-          N2N_SERVER_ADDR: ${{ secrets.N2N_SERVER_ADDR }}
-          N2N_SERVER_PORT: ${{ secrets.N2N_SERVER_PORT }}
-          N2N_COMMUNITY_NAME: ${{ secrets.N2N_COMMUNITY_NAME }}
-          N2N_KEY: ${{ secrets.N2N_KEY }}
-        run: |
-          .\windows\edge.exe -c ${env:N2N_COMMUNITY_NAME} -l ${env:N2N_SERVER_ADDR}:${env:N2N_SERVER_PORT} -a 172.16.40.122 -k ${env:N2N_KEY} -A3
       - name: Test
         env:
           N2N_SERVER_ADDR: ${{ secrets.N2N_SERVER_ADDR }}
@@ -53,6 +45,14 @@ jobs:
           N2N_KEY: ${{ secrets.N2N_KEY }}
         run: |
           Start-Job -ScriptBlock {.\windows\edge.exe -v}
+      - name: Launch N2N
+        env:
+          N2N_SERVER_ADDR: ${{ secrets.N2N_SERVER_ADDR }}
+          N2N_SERVER_PORT: ${{ secrets.N2N_SERVER_PORT }}
+          N2N_COMMUNITY_NAME: ${{ secrets.N2N_COMMUNITY_NAME }}
+          N2N_KEY: ${{ secrets.N2N_KEY }}
+        run: |
+          .\windows\edge.exe -c ${env:N2N_COMMUNITY_NAME} -l ${env:N2N_SERVER_ADDR}:${env:N2N_SERVER_PORT} -a 172.16.40.122 -k ${env:N2N_KEY} -A3
       - name: Maintaining
         run: |
           sleep 3600
