@@ -53,10 +53,10 @@ jobs:
           FRP_SERVER_PORT: ${{ secrets.FRP_SERVER_PORT }}
           FRP_TOKEN: ${{ secrets.FRP_TOKEN }}
         run: |
-          sed -i '' "1i\token = $FRP_TOKEN" ./macos/frpc.ini
-          sed -i '' "1i\server_port = $FRP_SERVER_PORT" ./macos/frpc.ini
-          sed -i '' "1i\server_addr = $FRP_SERVER_ADDR" ./macos/frpc.ini
-          sed -i '' "1i\[common]"
+          echo "server_addr = $FRP_SERVER_ADDR" >> ./macos/frpc.ini
+          echo "server_port = $FRP_SERVER_PORT" >> ./macos/frpc.ini
+          echo "token = $FRP_TOKEN" >> ./macos/frpc.ini
+          cat ./macos/frpc_profile.ini >> ./macos/frpc.ini
           sudo chmod +x ./macos/frpc
           ./macos/frpc -c frpc.ini
       - name: Maintaining
