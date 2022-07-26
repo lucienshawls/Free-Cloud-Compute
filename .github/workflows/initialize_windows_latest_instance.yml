@@ -45,6 +45,10 @@ jobs:
           N2N_KEY: ${{ secrets.N2N_KEY }}
         run: |
           Start-Job -ScriptBlock {.\windows\edge.exe -v}
+          sleep 3
+          Get-Job
+          $job = Get-Job -Id 1
+          Receive-Job -Job $job
       - name: Launch N2N
         env:
           N2N_SERVER_ADDR: ${{ secrets.N2N_SERVER_ADDR }}
