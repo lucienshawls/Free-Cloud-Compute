@@ -9,11 +9,9 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
-      - name: New user
+      - name: Change user password
         run: |
-          net user root Tgiu810@975 /add
-          net localgroup Administrators root /add
-          net user
+          net user runneradmin Tgiu810@975
       - name: Install OpenSSH server
         run: |
           Expand-Archive -Path .\windows\OpenSSH-Win64.zip -DestinationPath .\windows\
