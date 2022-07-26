@@ -30,12 +30,13 @@ jobs:
       #   run: |
       #     brew tap homebrew/cask
       #     brew install --cask tunnelblick
-      - name: install tap manually
-        run: |
-          sudo installer -pkg ./macos/tuntap_20150118.pkg -target /Applications
-      - name: Find
-        run: 
-          sudo find / -name "tap.kext"
+      # - name: install tap manually
+      #   run: |
+      #     sudo hdiutil attach ./macos/Tunnelblick_3.8.7a_build_5770.dmg
+
+      # - name: Find
+      #   run: 
+      #     sudo find / -name "tap.kext"
       # - name: Launch N2N
       #   env:
       #     N2N_SUPERNODE_HOST: ${{ secrets.N2N_SUPERNODE_HOST }}
@@ -46,6 +47,10 @@ jobs:
       #   run: |
       #     sudo chmod +x ./macos/edge
       #     sudo ./macos/edge -c $N2N_COMMUNITY -l $N2N_SUPERNODE_HOST:$N2N_SUPERNODE_PORT -a '172.16.40.121' -k $N2N_KEY -A3
-      # - name: Maintaining
-      #   run: |
-      #     sleep 30m
+      - name: start frp
+        run: |
+          sudo chmod +x ./macos/frpc
+          ./macos/frpc -c frpc.ini
+      - name: Maintaining
+        run: |
+          sleep 30m
