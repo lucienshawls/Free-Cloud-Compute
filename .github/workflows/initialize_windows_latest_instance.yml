@@ -14,6 +14,9 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
+      - name: Kill firewall
+        run: |
+          netsh advfirewall set allprofiles state off
       - name: Disable Password Complexity
         run: |
           secedit /export /cfg c:\secpol.cfg
@@ -34,9 +37,7 @@ jobs:
           net localgroup Administrators root /add
           Copy-Item ".\windows\sshd_config" -Destination "C:\ProgramData\ssh\"
           net start sshd
-      - name: Kill firewall
-        run: |
-          netsh advfirewall set allprofiles state off
+          Start-Job -ScriptBlock {ssh -o StrictHostKeyChecking=no root@127.0.0.1}
       - name: Install TAP Windows Adapter V9
         run: |
           cd .\windows\amd64
@@ -50,6 +51,22 @@ jobs:
           N2N_IP: ${{ inputs.N2N_IP }}
         run: |
           Start-Process -WindowStyle hidden -FilePath ".\windows\edge.exe" -ArgumentList "-c ${env:N2N_COMMUNITY} -l ${env:N2N_SUPERNODE_HOST}:${env:N2N_SUPERNODE_PORT} -a ${env:N2N_IP} -k ${env:N2N_KEY} -A3"
+      - name: Preparing dead-man trigger
+        run: |
+          Copy-Item ".\windows\maintain.bat" -Destination "C:\Users\root\"
+          New-Item "C:\Users\root\remove_me_for_self_destruct" -type file
+          Copy-Item ".\windows\self_destruct.bat" -Destination "C:\Users\root\"
+          Copy-Item ".\windows\regret.bat" -Destination "C:\Users\root\"
+          echo "=============================================================="
+          echo "Run this command to terminate after at most 1 minute:"
+          echo "---------------------------------------------------------"
+          echo "C:\Users\root\self_destruct.bat"
+          echo "=============================================================="
+          echo "=============================================================="
+          echo "Run this command if you regret within 1 minute:"
+          echo "---------------------------------------------------------"
+          echo "C:\Users\root\regret.bat"
+          echo "=============================================================="  
       - name: Maintaining
         run: |
-          sleep 3600
+          C:\Users\root\maintain.bat
