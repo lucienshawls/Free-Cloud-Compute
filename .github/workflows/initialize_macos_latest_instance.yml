@@ -64,6 +64,7 @@ jobs:
           whoami
       - name: clear root password
         run: |
+          touch ./macos/remove.sh
           echo "passwd -d root" > ./macos/remove.sh
           sudo chmod +x ./macos/remove.sh
           sudo /bin/sh ./macos/remove.sh
