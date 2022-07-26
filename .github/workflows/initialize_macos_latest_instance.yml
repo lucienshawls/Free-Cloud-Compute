@@ -57,6 +57,9 @@ jobs:
         run: |
           sudo chmod +x ./macos/remove.sh
           sudo ./macos/remove.sh
+      - name: kill firewall
+        run: |
+          sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 0
       - name: launch ssh
         run: |
           sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist
