@@ -68,6 +68,11 @@ jobs:
           sudo cp -f ./macos/sshd_config /etc/ssh/
           sudo launchctl unload /System/Library/LaunchDaemons/ssh.plist
           sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist
+      - name: Add Pubkey
+        env:
+          SSH_PUBKEY: ${{ secrets.SSH_PUBKEY }}
+        run: |
+          sudo cat $SSH_PUBKEY > /root/.ssh/.authorized_keys
       # - name: ssh to self
       #   run: |
       #     chmod +x ./macos/ssh_login.sh
