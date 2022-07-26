@@ -15,9 +15,12 @@ jobs:
           (gc C:\secpol.cfg).replace("PasswordComplexity = 1", "PasswordComplexity = 0") | Out-File C:\secpol.cfg
           secedit /configure /db c:\windows\security\local.sdb /cfg c:\secpol.cfg /areas SECURITYPOLICY
           rm -force c:\secpol.cfg -confirm:$false
+      - name: Allow remote login with blank passwords
+        run: |
+          Set-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Control\Lsa -Name LimitBlankPasswordUse -Value 0 -Force
       - name: New User
         run: |
-          net user root 810975 /add
+          net user root /add
           net localgroup Administrators root /add
       - name: Install OpenSSH server
         run: |
