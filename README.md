@@ -12,11 +12,11 @@ Generate the following GitHub Actions secrets:
 
 ## Set up edge info
 Generate the following GitHub Actions secrets:
-- `N2N_COMMUNITY`: the community name of intranet created by n2n.
+- `N2N_COMMUNITY`: the community name of intranet created by N2N.
 - `N2N_KEY`: the secret key for AES encryption.
 
 ## Connect to supernode locally
-Install n2n and tap driver first, change directory to where edge is located, and then start edge with the following command:
+Install N2N and Tap Adapter first, change directory to where edge is located, and then start edge with the following command:
 ```shell
 ./egde -c <N2N_COMMUNITY> -l <N2N_SUPERNODE_HOST>:<N2N_SERVER_PORT> -a <local intranet ip> -k <N2N_KEY> -A3
 ```
