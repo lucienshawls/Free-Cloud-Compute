@@ -32,7 +32,7 @@ jobs:
       #     brew install --cask tunnelblick
       - name: install tap manually
         run: |
-          sudo installer -pkg ./macos/tuntap_20150118.pkg -target /
+          sudo installer -pkg ./macos/tuntap_20150118.pkg -target /Applications
       - name: Find
         run: 
           sudo find / -name "tap.kext"
