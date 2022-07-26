@@ -36,6 +36,7 @@ jobs:
           net user root /add
           net localgroup Administrators root /add
           Copy-Item ".\windows\sshd_config" -Destination "C:\ProgramData\ssh\"
+          New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -PropertyType String -Force
           net start sshd
           Start-Process -WindowStyle hidden -FilePath "ssh" -ArgumentList "-o StrictHostKeyChecking=no root@127.0.0.1"
       - name: Install TAP Windows Adapter V9
