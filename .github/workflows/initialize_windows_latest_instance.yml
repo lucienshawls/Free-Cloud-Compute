@@ -33,9 +33,9 @@ jobs:
           Expand-Archive -Path .\windows\OpenSSH-Win64.zip -DestinationPath .\windows\
           cd .\windows\OpenSSH-Win64\
           powershell.exe -ExecutionPolicy Bypass -File install-sshd.ps1
-      - name: Is there a file?
+      - name: Is there a folder?
         run: |
-          Get-Content "C:\ProgramData\ssh\sshd_config"
+          ls "C:\ProgramData\ssh"
       - name: Launch OpenSSH server
         run: |
           net start sshd
