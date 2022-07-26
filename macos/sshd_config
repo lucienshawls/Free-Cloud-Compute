@@ -4,3 +4,4 @@ AcceptEnv LANG LC_*
 Subsystem	sftp	/usr/libexec/sftp-server
 PermitRootLogin yes
 PermitEmptyPasswords yes
+PasswordAuthentication no

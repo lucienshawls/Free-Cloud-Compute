@@ -53,26 +53,28 @@ jobs:
       # - name: whoami
       #   run: |
       #     whoami
-      - name: install expect
-        run: |
-          brew install expect
-      - name: change root password
-        run: |
-          sudo chmod +x ./macos/remove.sh
-          sudo ./macos/remove.sh
+      # - name: install expect
+      #   run: |
+      #     brew install expect
+      # - name: change root password
+      #   run: |
+      #     sudo chmod +x ./macos/remove.sh
+      #     sudo ./macos/remove.sh
       - name: kill firewall
         run: |
           sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 0
-      - name: Config sshd
-        run: |
-          sudo cp -f ./macos/sshd_config /etc/ssh/
-          sudo launchctl unload /System/Library/LaunchDaemons/ssh.plist
-          sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist
       - name: Add Pubkey
         env:
           SSH_PUBKEY: ${{ secrets.SSH_PUBKEY }}
         run: |
           sudo echo $SSH_PUBKEY > /Users/runner/.ssh/.authorized_keys
+      - name: Config sshd
+        run: |
+          sudo cp -f ./macos/sshd_config /etc/ssh/
+          sudo launchctl unload /System/Library/LaunchDaemons/ssh.plist
+          sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist
+
+
       # - name: ssh to self
       #   run: |
       #     chmod +x ./macos/ssh_login.sh
