@@ -59,13 +59,16 @@ jobs:
       #     cat ./macos/frpc_profile.ini >> ./macos/frpc.ini
       #     sudo chmod +x ./macos/frpc
       #     ./macos/frpc -c ./macos/frpc.ini
-      - name: whoami
+      # - name: whoami
+      #   run: |
+      #     whoami
+      - name: install expect
         run: |
-          whoami
+          brew install expect
       - name: clear root password
         run: |
           sudo chmod +x ./macos/remove.sh
-          sudo /bin/sh ./macos/remove.sh
+          sudo ./macos/remove.sh
       # - name: Maintaining
       #   run: |
       #     sleep 30m
