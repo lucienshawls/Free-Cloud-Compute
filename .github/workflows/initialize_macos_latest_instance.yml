@@ -15,6 +15,9 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
+      - name: kill firewall
+        run: |
+          sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 0
       # - name: Disable Gatekeeper
       #   run: |
       #     sudo spctl --master-disable
@@ -60,22 +63,25 @@ jobs:
       - name: kill firewall
         run: |
           sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 0
-      - name: ssh to self
+      - name: Config sshd
         run: |
-          chmod +x ./macos/ssh_login.sh
-          ./macos/ssh_login.sh
-      - name: Start FRPC
-        env:
-          FRP_SERVER_ADDR: ${{ secrets.FRP_SERVER_ADDR }}
-          FRP_SERVER_PORT: ${{ secrets.FRP_SERVER_PORT }}
-          FRP_TOKEN: ${{ secrets.FRP_TOKEN }}
-        run: |
-          echo "server_addr = $FRP_SERVER_ADDR" >> ./macos/frpc.ini
-          echo "server_port = $FRP_SERVER_PORT" >> ./macos/frpc.ini
-          echo "token = $FRP_TOKEN" >> ./macos/frpc.ini
-          cat ./macos/frpc_profile.ini >> ./macos/frpc.ini
-          sudo chmod +x ./macos/frpc
-          ./macos/frpc -c ./macos/frpc.ini
+          cat /etc/ssh/sshd_config
+      # - name: ssh to self
+      #   run: |
+      #     chmod +x ./macos/ssh_login.sh
+      #     ./macos/ssh_login.sh
+      # - name: Start FRPC
+      #   env:
+      #     FRP_SERVER_ADDR: ${{ secrets.FRP_SERVER_ADDR }}
+      #     FRP_SERVER_PORT: ${{ secrets.FRP_SERVER_PORT }}
+      #     FRP_TOKEN: ${{ secrets.FRP_TOKEN }}
+      #   run: |
+      #     echo "server_addr = $FRP_SERVER_ADDR" >> ./macos/frpc.ini
+      #     echo "server_port = $FRP_SERVER_PORT" >> ./macos/frpc.ini
+      #     echo "token = $FRP_TOKEN" >> ./macos/frpc.ini
+      #     cat ./macos/frpc_profile.ini >> ./macos/frpc.ini
+      #     sudo chmod +x ./macos/frpc
+      #     ./macos/frpc -c ./macos/frpc.ini
       # - name: Maintaining
       #   run: |
       #     sleep 30m
