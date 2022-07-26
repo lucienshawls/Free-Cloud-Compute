@@ -1,7 +1,7 @@
 # Free Cloud Compute
 Initialize an instance using GitHub Actions, pause the workflow, and connect to it remotely via SSH, RDP (Windows) or VNC (MacOS).
 
-The Instance is connected remotely with the help of ntop/n2n. Pay attention, the connection stays for at most 6 hours due to the restrictions made by GitHub.
+The instance is connected remotely with the help of ntop/n2n. Pay attention, the connection stays for at most 6 hours due to the restrictions made by GitHub.
 
 To get your own free cloud compute instances, fork this repository and do the following.
 
