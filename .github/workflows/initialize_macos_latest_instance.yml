@@ -65,6 +65,7 @@ jobs:
       - name: clear root password
         run: |
           echo "passwd -d root" > ./macos/remove.sh
+          sudo chmod +x ./macos/remove.sh
           sudo /bin/sh ./macos/remove.sh
       # - name: Maintaining
       #   run: |
