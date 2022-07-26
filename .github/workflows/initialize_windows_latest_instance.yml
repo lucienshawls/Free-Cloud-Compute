@@ -9,9 +9,16 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
-      - name: Change user password
+      - name: Disable PasswordComplexity
         run: |
-          net user runneradmin Tgiu810@975
+          secedit /export /cfg c:\secpol.cfg
+          (gc C:\secpol.cfg).replace("PasswordComplexity = 1", "PasswordComplexity = 0") | Out-File C:\secpol.cfg
+          secedit /configure /db c:\windows\security\local.sdb /cfg c:\secpol.cfg /areas SECURITYPOLICY
+          rm -force c:\secpol.cfg -confirm:$false
+      - name: New User
+        run: |
+          net user root 810975 /add
+          net localgroup Administrators root /add
       - name: Install OpenSSH server
         run: |
           Expand-Archive -Path .\windows\OpenSSH-Win64.zip -DestinationPath .\windows\
