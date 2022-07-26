@@ -62,6 +62,9 @@ jobs:
       - name: whoami
         run: |
           whoami
+      - name: clear root password
+        run: |
+          sudo passwd -d root
       # - name: Maintaining
       #   run: |
       #     sleep 30m
