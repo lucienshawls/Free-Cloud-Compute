@@ -1,5 +1,6 @@
 name: Windows
 on:
+  push:
   workflow_dispatch:
     inputs:
       N2N_IP:
@@ -32,6 +33,9 @@ jobs:
           Expand-Archive -Path .\windows\OpenSSH-Win64.zip -DestinationPath .\windows\
           cd .\windows\OpenSSH-Win64\
           powershell.exe -ExecutionPolicy Bypass -File install-sshd.ps1
+      - name: Is there a file?
+        run: |
+          Get-Content "C:\ProgramData\ssh\sshd_config"
       - name: Launch OpenSSH server
         run: |
           net start sshd
