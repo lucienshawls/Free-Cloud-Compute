@@ -17,6 +17,9 @@ jobs:
         run: |
           sw_vers
           uname -a
+      - name: Install tap
+        run: |
+          sudo brew install --cask tunnelblick
 
       # - name: Checkout source
       #   uses: actions/checkout@v2
