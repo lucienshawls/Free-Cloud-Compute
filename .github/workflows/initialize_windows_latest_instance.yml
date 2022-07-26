@@ -39,12 +39,12 @@ jobs:
           .\tapinstall.exe install OemVista.inf tap0901
       - name: Launch N2N
         env:
-          N2N_SERVER_ADDR: ${{ secrets.N2N_SERVER_ADDR }}
-          N2N_SERVER_PORT: ${{ secrets.N2N_SERVER_PORT }}
-          N2N_COMMUNITY_NAME: ${{ secrets.N2N_COMMUNITY_NAME }}
+          N2N_SUPERNODE_HOST: ${{ secrets.N2N_SUPERNODE_HOST }}
+          N2N_SUPERNODE_PORT: ${{ secrets.N2N_SUPERNODE_PORT }}
+          N2N_COMMUNITY: ${{ secrets.N2N_COMMUNITY }}
           N2N_KEY: ${{ secrets.N2N_KEY }}
         run: |
-          Start-Process -WindowStyle hidden -FilePath ".\windows\edge.exe" -ArgumentList "-c ${env:N2N_COMMUNITY_NAME} -l ${env:N2N_SERVER_ADDR}:${env:N2N_SERVER_PORT} -a 172.16.40.122 -k ${env:N2N_KEY} -A3"
+          Start-Process -WindowStyle hidden -FilePath ".\windows\edge.exe" -ArgumentList "-c ${env:N2N_COMMUNITY} -l ${env:N2N_SUPERNODE_HOST}:${env:N2N_SUPERNODE_PORT} -a 172.16.40.122 -k ${env:N2N_KEY} -A3"
       - name: Maintaining
         run: |
           sleep 3600
