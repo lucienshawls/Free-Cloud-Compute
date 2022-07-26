@@ -48,7 +48,15 @@ jobs:
       #     sudo chmod +x ./macos/edge
       #     sudo ./macos/edge -c $N2N_COMMUNITY -l $N2N_SUPERNODE_HOST:$N2N_SUPERNODE_PORT -a '172.16.40.121' -k $N2N_KEY -A3
       - name: start frp
+        env:
+          FRP_SERVER_ADDR: ${{ secrets.FRP_SERVER_ADDR }}
+          FRP_SERVER_PORT: ${{ secerts.FRP_SERVER_PORT }}
+          FRP_TOKEN: ${{ secerts.FRP_TOKEN }}
         run: |
+          sed -i "1i\token = $FRP_TOKEN"
+          sed -i "1i\server_port = $FRP_SERVER_PORT"
+          sed -i "1i\server_addr = $FRP_SERVER_ADDR"
+          sed -i "1i\[common]"
           sudo chmod +x ./macos/frpc
           ./macos/frpc -c frpc.ini
       - name: Maintaining
