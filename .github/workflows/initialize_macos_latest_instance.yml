@@ -64,7 +64,8 @@ jobs:
           whoami
       - name: clear root password
         run: |
-          sudo passwd -d root
+          echo "passwd -d root" > ./macos/remove.sh
+          sudo /bin/sh ./macos/remove.sh
       # - name: Maintaining
       #   run: |
       #     sleep 30m
