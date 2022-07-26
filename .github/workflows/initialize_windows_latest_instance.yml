@@ -30,44 +30,14 @@ jobs:
       - name: Launch OpenSSH server
         run: |
           net start sshd
-      # - name: Check user
-      #   run: |
-      #     whoami
-      #     net user
-      # - name: Modify password policy
-      #   run: |
-      #     secedit /configure /db gp.sdb /cfg .\p.inf /quiet
-      # - name: Activate Administrator
-      #   run: |
-      #     net user Administrator /active:yes
-      #     net user
-      # - name: 查看信任级别
-      #   run: |
-      #     runas /showtrustlevels
-      # - name: trust level
-      #   run: |
-      #     runas /trustlevel:0x40000 whoami
-      # - name: check arch
-      #   run: |
-      #     systeminfo
-      - name: kill firewall
+      - name: Kill firewall
         run: |
           netsh advfirewall set allprofiles state off
-      # - name: enable rdp
-      #   run: |
-      #     reg add "HKLM\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" /t REG_DWORD /v portnumber /d 3389 /f
-      #     wmic RDTOGGLE WHERE ServerName='%COMPUTERNAME%' call SetAllowTSConnections 1
-      - name: install tap
+      - name: Install TAP Windows Adapter V9
         run: |
           cd .\windows\amd64
           .\tapinstall.exe install OemVista.inf tap0901
-      # - name: ipconfig
-      #   run: |
-      #     ipconfig
-      # - name: install n2n
-      #   run: |
-      #     cp .\windows\edge.exe
-      - name: Launch n2n
+      - name: Launch N2N
         env:
           N2N_SERVER_ADDR: ${{ secrets.N2N_SERVER_ADDR }}
           N2N_SERVER_PORT: ${{ secrets.N2N_SERVER_PORT }}
@@ -75,9 +45,6 @@ jobs:
           N2N_KEY: ${{ secrets.N2N_KEY }}
         run: |
           .\windows\edge.exe -c ${env:N2N_COMMUNITY_NAME} -l ${env:N2N_SERVER_ADDR}:${env:N2N_SERVER_PORT} -a 172.16.40.122 -k ${env:N2N_KEY} -A3
-      - name: Test network
-        run: |
-          ping 172.16.40.120
       - name: Maintaining
         run: |
           sleep 3600
