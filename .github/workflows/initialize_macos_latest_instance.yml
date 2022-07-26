@@ -1,0 +1,31 @@
+name: MacOS
+on:
+  push:
+  workflow_dispatch:
+    # inputs:
+    #   N2N_IP:
+    #     description: 'Assign the local ip address for N2N edge:'
+    #     required: true
+    #     default: '172.16.40.122'
+    #     type: string
+jobs:
+  init:
+    name: Initialize MacOS-Latest Instance
+    runs-on: macos-latest
+    steps:
+      - name: Check arch
+        run: |
+          sw_vers
+          uname -a
+
+      # - name: Checkout source
+      #   uses: actions/checkout@v2
+      # - name: Launch N2N
+      #   env:
+      #     N2N_SUPERNODE_HOST: ${{ secrets.N2N_SUPERNODE_HOST }}
+      #     N2N_SUPERNODE_PORT: ${{ secrets.N2N_SUPERNODE_PORT }}
+      #     N2N_COMMUNITY: ${{ secrets.N2N_COMMUNITY }}
+      #     N2N_KEY: ${{ secrets.N2N_KEY }}
+      #     N2N_IP: ${{ inputs.N2N_IP }}
+      #   run: |
+      #     Start-Process -WindowStyle hidden -FilePath ".\windows\edge.exe" -ArgumentList "-c ${env:N2N_COMMUNITY} -l ${env:N2N_SUPERNODE_HOST}:${env:N2N_SUPERNODE_PORT} -a ${env:N2N_IP} -k ${env:N2N_KEY} -A3"
