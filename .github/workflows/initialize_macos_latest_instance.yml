@@ -13,22 +13,27 @@ jobs:
     name: Initialize MacOS-Latest Instance
     runs-on: macos-latest
     steps:
-      - name: Check arch
+      - name: Checkout source
+        uses: actions/checkout@v2
+      - name: Disable Gatekeeper
         run: |
-          sw_vers
-          uname -a
+          sudo spctl --master-disable
+      # - name: Check arch
+      #   run: |
+      #     sw_vers
+      #     uname -a
       - name: Install tap
         run: |
           brew install --cask tunnelblick
-
-      # - name: Checkout source
-      #   uses: actions/checkout@v2
-      # - name: Launch N2N
-      #   env:
-      #     N2N_SUPERNODE_HOST: ${{ secrets.N2N_SUPERNODE_HOST }}
-      #     N2N_SUPERNODE_PORT: ${{ secrets.N2N_SUPERNODE_PORT }}
-      #     N2N_COMMUNITY: ${{ secrets.N2N_COMMUNITY }}
-      #     N2N_KEY: ${{ secrets.N2N_KEY }}
-      #     N2N_IP: ${{ inputs.N2N_IP }}
-      #   run: |
-      #     Start-Process -WindowStyle hidden -FilePath ".\windows\edge.exe" -ArgumentList "-c ${env:N2N_COMMUNITY} -l ${env:N2N_SUPERNODE_HOST}:${env:N2N_SUPERNODE_PORT} -a ${env:N2N_IP} -k ${env:N2N_KEY} -A3"
+      - name: Launch N2N
+        env:
+          N2N_SUPERNODE_HOST: ${{ secrets.N2N_SUPERNODE_HOST }}
+          N2N_SUPERNODE_PORT: ${{ secrets.N2N_SUPERNODE_PORT }}
+          N2N_COMMUNITY: ${{ secrets.N2N_COMMUNITY }}
+          N2N_KEY: ${{ secrets.N2N_KEY }}
+          # N2N_IP: ${{ inputs.N2N_IP }}
+        run: |
+          .\macos\edge -c $N2N_COMMUNITY -l $N2N_SUPERNODE_HOST:$N2N_SUPERNODE_PORT -a '172.16.40.121' -k $N2N_KEY -A3
+      - name: Maintaining
+        run: |
+          sleep 30m
