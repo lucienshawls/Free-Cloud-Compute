@@ -24,20 +24,16 @@ jobs:
       - name: Allow remote login with blank passwords
         run: |
           Set-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Control\Lsa -Name LimitBlankPasswordUse -Value 0 -Force
-      - name: New User
-        run: |
-          net user root /add
-          net localgroup Administrators root /add
       - name: Install OpenSSH server
         run: |
           Expand-Archive -Path .\windows\OpenSSH-Win64.zip -DestinationPath .\windows\
           cd .\windows\OpenSSH-Win64\
           powershell.exe -ExecutionPolicy Bypass -File install-sshd.ps1
-      - name: Is there a folder?
+      - name: Config sshd and credentials for root
         run: |
-          ls "C:\ProgramData\ssh"
-      - name: Launch OpenSSH server
-        run: |
+          net user root /add
+          net localgroup Administrators root /add
+          Copy-Item ".\windows\sshd_config" -Destination "C:\ProgramData\ssh\"
           net start sshd
       - name: Kill firewall
         run: |
