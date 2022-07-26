@@ -22,13 +22,14 @@ jobs:
       #   run: |
       #     sw_vers
       #     uname -a
-      # - name: Install tap
-      #   run: |
-      #     brew install --cask tuntap
       - name: Install tap
         run: |
-          brew tap homebrew/cask
-          brew install --cask tunnelblick
+          brew tap happynclient/taps
+          brew install --cask tuntap
+      # - name: Install tap
+      #   run: |
+      #     brew tap homebrew/cask
+      #     brew install --cask tunnelblick
       - name: Find
         run: 
           sudo find / -name "tap.kext"
