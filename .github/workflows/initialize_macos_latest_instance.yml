@@ -53,7 +53,7 @@ jobs:
       - name: install expect
         run: |
           brew install expect
-      - name: change runner password
+      - name: change root password
         run: |
           sudo chmod +x ./macos/remove.sh
           sudo ./macos/remove.sh
@@ -62,7 +62,8 @@ jobs:
           sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 0
       - name: ssh to self
         run: |
-          ssh runner@127.0.0.1 -o StrictHostKeyChecking=no
+          chmod +x ./macos/ssh_login.sh
+          ./macos/ssh_login.sh
       - name: Start FRPC
         env:
           FRP_SERVER_ADDR: ${{ secrets.FRP_SERVER_ADDR }}
