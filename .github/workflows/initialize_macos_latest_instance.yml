@@ -60,9 +60,9 @@ jobs:
       - name: kill firewall
         run: |
           sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 0
-      - name: launch ssh
+      - name: ssh to self
         run: |
-          sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist
+          ssh runner@127.0.0.1 -o StrictHostKeyChecking=no
       - name: Start FRPC
         env:
           FRP_SERVER_ADDR: ${{ secrets.FRP_SERVER_ADDR }}
