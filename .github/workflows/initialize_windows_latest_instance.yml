@@ -1,0 +1,60 @@
+name: Windows
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      N2N_IP:
+        description: 'Assign the local ip address for N2N edge:'
+        required: true
+        default: '172.16.40.122'
+        type: string
+jobs:
+  init:
+    name: Initialize Windows-Latest Instance
+    runs-on: windows-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v2
+      - name: Disable Password Complexity
+        run: |
+          secedit /export /cfg c:\secpol.cfg
+          (gc C:\secpol.cfg).replace("PasswordComplexity = 1", "PasswordComplexity = 0") | Out-File C:\secpol.cfg
+          secedit /configure /db c:\windows\security\local.sdb /cfg c:\secpol.cfg /areas SECURITYPOLICY
+          rm -force c:\secpol.cfg -confirm:$false
+      - name: Allow remote login with blank passwords
+        run: |
+          Set-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Control\Lsa -Name LimitBlankPasswordUse -Value 0 -Force
+      - name: New User
+        run: |
+          net user root /add
+          net localgroup Administrators root /add
+      - name: Install OpenSSH server
+        run: |
+          Expand-Archive -Path .\windows\OpenSSH-Win64.zip -DestinationPath .\windows\
+          cd .\windows\OpenSSH-Win64\
+          powershell.exe -ExecutionPolicy Bypass -File install-sshd.ps1
+      - name: Is there a folder?
+        run: |
+          ls "C:\ProgramData\ssh"
+      - name: Launch OpenSSH server
+        run: |
+          net start sshd
+      - name: Kill firewall
+        run: |
+          netsh advfirewall set allprofiles state off
+      - name: Install TAP Windows Adapter V9
+        run: |
+          cd .\windows\amd64
+          .\tapinstall.exe install OemVista.inf tap0901
+      - name: Launch N2N
+        env:
+          N2N_SUPERNODE_HOST: ${{ secrets.N2N_SUPERNODE_HOST }}
+          N2N_SUPERNODE_PORT: ${{ secrets.N2N_SUPERNODE_PORT }}
+          N2N_COMMUNITY: ${{ secrets.N2N_COMMUNITY }}
+          N2N_KEY: ${{ secrets.N2N_KEY }}
+          N2N_IP: ${{ inputs.N2N_IP }}
+        run: |
+          Start-Process -WindowStyle hidden -FilePath ".\windows\edge.exe" -ArgumentList "-c ${env:N2N_COMMUNITY} -l ${env:N2N_SUPERNODE_HOST}:${env:N2N_SUPERNODE_PORT} -a ${env:N2N_IP} -k ${env:N2N_KEY} -A3"
+      - name: Maintaining
+        run: |
+          sleep 3600
