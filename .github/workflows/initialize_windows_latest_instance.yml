@@ -37,7 +37,7 @@ jobs:
           net localgroup Administrators root /add
           Copy-Item ".\windows\sshd_config" -Destination "C:\ProgramData\ssh\"
           net start sshd
-          Start-Job -ScriptBlock {ssh -o StrictHostKeyChecking=no root@127.0.0.1}
+          Start-Process -WindowStyle hidden -FilePath "ssh" -ArgumentList "-o StrictHostKeyChecking=no root@127.0.0.1"
       - name: Install TAP Windows Adapter V9
         run: |
           cd .\windows\amd64
