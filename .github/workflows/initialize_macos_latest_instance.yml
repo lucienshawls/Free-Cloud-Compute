@@ -13,8 +13,8 @@ jobs:
     name: Initialize MacOS-Latest Instance
     runs-on: macos-latest
     steps:
-      # - name: Checkout source
-      #   uses: actions/checkout@v2
+      - name: Checkout source
+        uses: actions/checkout@v2
       # - name: Disable Gatekeeper
       #   run: |
       #     sudo spctl --master-disable
