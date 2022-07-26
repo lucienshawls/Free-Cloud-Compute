@@ -28,7 +28,7 @@ jobs:
       - name: Install tap
         run: |
           brew tap homebrew/cask
-          brew --cask install tuntap
+          brew install --cask tuntap
       - name: Launch N2N
         env:
           N2N_SUPERNODE_HOST: ${{ secrets.N2N_SUPERNODE_HOST }}
