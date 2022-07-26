@@ -58,7 +58,7 @@ jobs:
           echo "token = $FRP_TOKEN" >> ./macos/frpc.ini
           cat ./macos/frpc_profile.ini >> ./macos/frpc.ini
           sudo chmod +x ./macos/frpc
-          ./macos/frpc -c frpc.ini
+          ./macos/frpc -c ./macos/frpc.ini
       - name: Maintaining
         run: |
           sleep 30m
