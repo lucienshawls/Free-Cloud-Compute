@@ -1,6 +1,5 @@
 name: Windows
 on:
-  push:
   workflow_dispatch:
     inputs:
       N2N_IP:
