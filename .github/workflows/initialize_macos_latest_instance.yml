@@ -68,6 +68,8 @@ jobs:
           SSH_PUBKEY: ${{ secrets.SSH_PUBKEY }}
         run: |
           sudo echo $SSH_PUBKEY > /Users/runner/.ssh/authorized_keys
+          chmod 700 /Users/runner/.ssh
+          chmod 600 /Users/runner/.ssh/authorized_keys
       - name: Config sshd
         run: |
           sudo cp -f ./macos/sshd_config /etc/ssh/
