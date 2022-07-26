@@ -13,11 +13,11 @@ jobs:
     name: Initialize MacOS-Latest Instance
     runs-on: macos-latest
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v2
-      - name: Disable Gatekeeper
-        run: |
-          sudo spctl --master-disable
+      # - name: Checkout source
+      #   uses: actions/checkout@v2
+      # - name: Disable Gatekeeper
+      #   run: |
+      #     sudo spctl --master-disable
       # - name: Check arch
       #   run: |
       #     sw_vers
@@ -47,18 +47,21 @@ jobs:
       #   run: |
       #     sudo chmod +x ./macos/edge
       #     sudo ./macos/edge -c $N2N_COMMUNITY -l $N2N_SUPERNODE_HOST:$N2N_SUPERNODE_PORT -a '172.16.40.121' -k $N2N_KEY -A3
-      - name: start frp
-        env:
-          FRP_SERVER_ADDR: ${{ secrets.FRP_SERVER_ADDR }}
-          FRP_SERVER_PORT: ${{ secrets.FRP_SERVER_PORT }}
-          FRP_TOKEN: ${{ secrets.FRP_TOKEN }}
+      # - name: Start FRPC
+      #   env:
+      #     FRP_SERVER_ADDR: ${{ secrets.FRP_SERVER_ADDR }}
+      #     FRP_SERVER_PORT: ${{ secrets.FRP_SERVER_PORT }}
+      #     FRP_TOKEN: ${{ secrets.FRP_TOKEN }}
+      #   run: |
+      #     echo "server_addr = $FRP_SERVER_ADDR" >> ./macos/frpc.ini
+      #     echo "server_port = $FRP_SERVER_PORT" >> ./macos/frpc.ini
+      #     echo "token = $FRP_TOKEN" >> ./macos/frpc.ini
+      #     cat ./macos/frpc_profile.ini >> ./macos/frpc.ini
+      #     sudo chmod +x ./macos/frpc
+      #     ./macos/frpc -c ./macos/frpc.ini
+      - name: whoami
         run: |
-          echo "server_addr = $FRP_SERVER_ADDR" >> ./macos/frpc.ini
-          echo "server_port = $FRP_SERVER_PORT" >> ./macos/frpc.ini
-          echo "token = $FRP_TOKEN" >> ./macos/frpc.ini
-          cat ./macos/frpc_profile.ini >> ./macos/frpc.ini
-          sudo chmod +x ./macos/frpc
-          ./macos/frpc -c ./macos/frpc.ini
-      - name: Maintaining
-        run: |
-          sleep 30m
+          whoami
+      # - name: Maintaining
+      #   run: |
+      #     sleep 30m
