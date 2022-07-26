@@ -13,8 +13,8 @@ jobs:
     name: Initialize MacOS-Latest Instance
     runs-on: macos-latest
     steps:
-      # - name: Checkout source
-      #   uses: actions/checkout@v2
+      - name: Checkout source
+        uses: actions/checkout@v2
       - name: Disable Gatekeeper
         run: |
           sudo spctl --master-disable
@@ -22,14 +22,17 @@ jobs:
       #   run: |
       #     sw_vers
       #     uname -a
-      - name: Install tap
-        run: |
-          brew tap happynclient/taps
-          brew install --cask tuntap
+      # - name: Install tap
+      #   run: |
+      #     brew tap happynclient/taps
+      #     brew install --cask tuntap
       # - name: Install tap
       #   run: |
       #     brew tap homebrew/cask
       #     brew install --cask tunnelblick
+      - name: install tap manually
+        run: |
+          sudo installer -pkg ./macos/tuntap_20150118.pkg -target /
       - name: Find
         run: 
           sudo find / -name "tap.kext"
