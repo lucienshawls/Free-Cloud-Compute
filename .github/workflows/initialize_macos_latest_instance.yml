@@ -13,8 +13,8 @@ jobs:
     name: Initialize MacOS-Latest Instance
     runs-on: macos-latest
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v2
+      # - name: Checkout source
+      #   uses: actions/checkout@v2
       - name: Disable Gatekeeper
         run: |
           sudo spctl --master-disable
@@ -29,17 +29,17 @@ jobs:
         run: |
           brew tap homebrew/cask
           brew install --cask tunnelblick
-          sudo /sbin/kextload /Library/Extensions/tap.kext
-      - name: Launch N2N
-        env:
-          N2N_SUPERNODE_HOST: ${{ secrets.N2N_SUPERNODE_HOST }}
-          N2N_SUPERNODE_PORT: ${{ secrets.N2N_SUPERNODE_PORT }}
-          N2N_COMMUNITY: ${{ secrets.N2N_COMMUNITY }}
-          N2N_KEY: ${{ secrets.N2N_KEY }}
-          # N2N_IP: ${{ inputs.N2N_IP }}
-        run: |
-          sudo chmod +x ./macos/edge
-          sudo ./macos/edge -c $N2N_COMMUNITY -l $N2N_SUPERNODE_HOST:$N2N_SUPERNODE_PORT -a '172.16.40.121' -k $N2N_KEY -A3
-      - name: Maintaining
-        run: |
-          sleep 30m
+          ls /Library/Extensions/tap.kext
+      # - name: Launch N2N
+      #   env:
+      #     N2N_SUPERNODE_HOST: ${{ secrets.N2N_SUPERNODE_HOST }}
+      #     N2N_SUPERNODE_PORT: ${{ secrets.N2N_SUPERNODE_PORT }}
+      #     N2N_COMMUNITY: ${{ secrets.N2N_COMMUNITY }}
+      #     N2N_KEY: ${{ secrets.N2N_KEY }}
+      #     # N2N_IP: ${{ inputs.N2N_IP }}
+      #   run: |
+      #     sudo chmod +x ./macos/edge
+      #     sudo ./macos/edge -c $N2N_COMMUNITY -l $N2N_SUPERNODE_HOST:$N2N_SUPERNODE_PORT -a '172.16.40.121' -k $N2N_KEY -A3
+      # - name: Maintaining
+      #   run: |
+      #     sleep 30m
