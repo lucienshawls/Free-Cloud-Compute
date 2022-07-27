@@ -37,7 +37,6 @@ jobs:
           sudo chmod 600 /root/.ssh/authorized_keys
           sudo chmod 700 /root/.ssh
           sudo chmod 700 /root
-          sudo systemctl restart sshd
       - name: Install n2n
         run: |
           sudo dpkg -i ./ubuntu/n2n_3.0.0-1038_amd64.deb
