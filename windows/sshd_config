@@ -1,3 +1,5 @@
 AuthorizedKeysFile	.ssh/authorized_keys
 PermitEmptyPasswords yes
 Subsystem	sftp	sftp-server.exe
+Match Group administrators
+       AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys
