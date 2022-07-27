@@ -7,6 +7,11 @@ on:
         required: true
         default: '172.16.40.122'
         type: string
+      SSH_PUBKEY:
+        description: 'Use SSH public key?'
+        required: true
+        default: true
+        type: boolean
 jobs:
   init:
     name: Initialize Ubuntu-Latest Instance
@@ -18,6 +23,16 @@ jobs:
         run: |
           sudo passwd -d root
           sudo cp -f ./ubuntu/sshd_config /etc/ssh/
+          sudo systemctl restart sshd
+      - name: Set SSH public key
+        if: ${{ inputs.SSH_PUBKEY }}
+        env:
+          SSH_PUBKEY: ${{ secrets.SSH_PUBKEY }}
+        run: |
+          sudo echo $SSH_PUBKEY > /root/.ssh/authorized_keys
+          sudo chown root /root/.ssh/authorized_keys
+          sudo chmod 700 /root/.ssh
+          sudo chmod 600 /root/.ssh/authorized_keys
           sudo systemctl restart sshd
       - name: Install n2n
         run: |
