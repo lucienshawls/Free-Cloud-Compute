@@ -52,7 +52,8 @@ jobs:
           sudo chmod 600 /root/.ssh/authorized_keys
           sudo chmod 700 /root/.ssh
           sudo chmod 700 /root
-          echo $SSH_PUBKEY /home/runner/.ssh/authorized_keys
+          mkdir /home/runner/.ssh
+          echo $SSH_PUBKEY > /home/runner/.ssh/authorized_keys
           chmod 600 /home/runner/.ssh/authorized_keys
           chmod 700 /home/runner/.ssh
       - name: Install N2N
