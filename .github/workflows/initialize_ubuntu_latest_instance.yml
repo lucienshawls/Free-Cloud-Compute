@@ -73,8 +73,8 @@ jobs:
           FRP_SERVER_PORT: ${{ secrets.FRP_SERVER_PORT }}
           FRP_TOKEN: ${{ secrets.FRP_TOKEN }}
           FRP_SSH_PORT: ${{ inputs.FRP_SSH_PORT }}
-        run:
-          sudo chmod +x ./ubuntu/frpc
+        run: |
+          chmod +x ./ubuntu/frpc
           sudo ./ubuntu/frpc ./ubuntu/frpc.ini
       - name: Preparing dead-man trigger
         run: |
