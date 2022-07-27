@@ -7,6 +7,11 @@ on:
         required: true
         default: '172.16.40.122'
         type: string
+      SSH_PUBKEY:
+        description: 'Use SSH public key'
+        required: true
+        default: true
+        type: boolean
 jobs:
   init:
     name: Initialize Windows-Latest Instance
@@ -38,7 +43,13 @@ jobs:
           Copy-Item ".\windows\sshd_config" -Destination "C:\ProgramData\ssh\"
           New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -PropertyType String -Force
           net start sshd
-          Start-Process -WindowStyle hidden -FilePath "ssh" -ArgumentList "-o StrictHostKeyChecking=no root@127.0.0.1"
+      - name: Set SSH public key
+        if: ${{ inputs.SSH_PUBKEY }}
+        env:
+          SSH_PUBKEY: ${{ secrets.SSH_PUBKEY }}
+        run: |
+          echo ${env:SSH_PUBKEY} > "C:\ProgramData\ssh\administrators_authorized_keys"
+          icacls.exe "C:\ProgramData\ssh\administrators_authorized_keys" /inheritance:r /grant "Administrators:F" /grant "SYSTEM:F"
       - name: Install TAP Windows Adapter V9
         run: |
           cd .\windows\amd64
@@ -54,20 +65,20 @@ jobs:
           Start-Process -WindowStyle hidden -FilePath ".\windows\edge.exe" -ArgumentList "-c ${env:N2N_COMMUNITY} -l ${env:N2N_SUPERNODE_HOST}:${env:N2N_SUPERNODE_PORT} -a ${env:N2N_IP} -k ${env:N2N_KEY} -A3"
       - name: Preparing dead-man trigger
         run: |
-          Copy-Item ".\windows\maintain.bat" -Destination "C:\Users\root\"
-          New-Item "C:\Users\root\remove_me_for_self_destruct" -type file
-          Copy-Item ".\windows\self_destruct.bat" -Destination "C:\Users\root\"
-          Copy-Item ".\windows\regret.bat" -Destination "C:\Users\root\"
+          Copy-Item ".\windows\maintain.bat" -Destination "D:\"
+          New-Item "D:\remove_me_for_self_destruct" -type file
+          Copy-Item ".\windows\self_destruct.bat" -Destination "D:\"
+          Copy-Item ".\windows\regret.bat" -Destination "D:\"
           echo "=============================================================="
           echo "Run this command to terminate after at most 1 minute:"
           echo "---------------------------------------------------------"
-          echo "C:\Users\root\self_destruct.bat"
+          echo "D:\self_destruct.bat"
           echo "=============================================================="
           echo "=============================================================="
           echo "Run this command if you regret within 1 minute:"
           echo "---------------------------------------------------------"
-          echo "C:\Users\root\regret.bat"
+          echo "D:\regret.bat"
           echo "=============================================================="  
       - name: Maintaining
         run: |
-          C:\Users\root\maintain.bat
+          D:\maintain.bat
