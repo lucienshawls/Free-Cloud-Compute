@@ -1,0 +1,56 @@
+name: MacOS
+on:
+  workflow_dispatch:
+    # inputs:
+    #   N2N_IP:
+    #     description: 'Assign the local ip address for N2N edge:'
+    #     required: true
+    #     default: '172.16.40.122'
+    #     type: string
+jobs:
+  init:
+    name: Initialize MacOS-Latest Instance
+    runs-on: macos-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v2
+      - name: kill firewall
+        run: |
+          sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 0
+      # - name: Launch N2N
+      #   env:
+      #     N2N_SUPERNODE_HOST: ${{ secrets.N2N_SUPERNODE_HOST }}
+      #     N2N_SUPERNODE_PORT: ${{ secrets.N2N_SUPERNODE_PORT }}
+      #     N2N_COMMUNITY: ${{ secrets.N2N_COMMUNITY }}
+      #     N2N_KEY: ${{ secrets.N2N_KEY }}
+      #     # N2N_IP: ${{ inputs.N2N_IP }}
+      #   run: |
+      #     sudo chmod +x ./macos/edge
+      #     sudo ./macos/edge -c $N2N_COMMUNITY -l $N2N_SUPERNODE_HOST:$N2N_SUPERNODE_PORT -a '172.16.40.121' -k $N2N_KEY -A3
+      # - name: install expect
+      #   run: |
+      #     brew install expect
+      - name: Add Pubkey
+        env:
+          SSH_PUBKEY: ${{ secrets.SSH_PUBKEY }}
+        run: |
+          sudo echo $SSH_PUBKEY > /Users/runner/.ssh/authorized_keys
+          chmod 700 /Users/runner/.ssh
+          chmod 600 /Users/runner/.ssh/authorized_keys
+      - name: Config sshd
+        run: |
+          sudo cp -f ./macos/sshd_config /etc/ssh/
+          sudo launchctl unload /System/Library/LaunchDaemons/ssh.plist
+          sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist
+      - name: Start FRPC
+        env:
+          FRP_SERVER_ADDR: ${{ secrets.FRP_SERVER_ADDR }}
+          FRP_SERVER_PORT: ${{ secrets.FRP_SERVER_PORT }}
+          FRP_TOKEN: ${{ secrets.FRP_TOKEN }}
+        run: |
+          echo "server_addr = $FRP_SERVER_ADDR" >> ./macos/frpc.ini
+          echo "server_port = $FRP_SERVER_PORT" >> ./macos/frpc.ini
+          echo "token = $FRP_TOKEN" >> ./macos/frpc.ini
+          cat ./macos/frpc_profile.ini >> ./macos/frpc.ini
+          sudo chmod +x ./macos/frpc
+          ./macos/frpc -c ./macos/frpc.ini
