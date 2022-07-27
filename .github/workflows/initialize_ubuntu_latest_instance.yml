@@ -75,7 +75,7 @@ jobs:
           FRP_SSH_PORT: ${{ inputs.FRP_SSH_PORT }}
         run: |
           chmod +x ./ubuntu/frpc
-          sudo ./ubuntu/frpc ./ubuntu/frpc.ini
+          sudo ./ubuntu/frpc -c ./ubuntu/frpc.ini
       - name: Preparing dead-man trigger
         run: |
           sudo cp ./ubuntu/maintain.sh /root/
