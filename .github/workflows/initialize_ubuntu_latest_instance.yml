@@ -18,7 +18,7 @@ on:
         default: false
         type: boolean
       FRP_SSH_PORT:
-        description: 'Specify the remote ssh port (forwarding)'
+        description: 'Specify the remote SSH port (forwarding)'
         required: false
         default: '10022'
         type: string
@@ -52,6 +52,10 @@ jobs:
           sudo chmod 600 /root/.ssh/authorized_keys
           sudo chmod 700 /root/.ssh
           sudo chmod 700 /root
+          mkdir /home/runner/.ssh
+          echo $SSH_PUBKEY > /home/runner/.ssh/authorized_keys
+          chmod 600 /home/runner/.ssh/authorized_keys
+          chmod 700 /home/runner/.ssh
       - name: Install N2N
         if: ${{ inputs.USE_N2N }}
         run: |
