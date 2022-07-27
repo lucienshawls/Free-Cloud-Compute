@@ -77,7 +77,7 @@ jobs:
           export FRP_SERVER_ADDR="$FRP_SERVER_ADDR"
           export FRP_SERVER_PORT="$FRP_SERVER_PORT"
           export FRP_TOKEN="$FRP_TOKEN"
-          export FRP_SSH_PORT:"$FRP_SSH_PORT"
+          export FRP_SSH_PORT="$FRP_SSH_PORT"
           chmod +x ./ubuntu/frpc
           sudo ./ubuntu/frpc -c ./ubuntu/frpc.ini
       - name: Preparing dead-man trigger
