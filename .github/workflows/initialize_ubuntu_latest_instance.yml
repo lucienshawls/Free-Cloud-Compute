@@ -8,7 +8,7 @@ on:
         default: true
         type: boolean
       N2N_IP:
-        description: 'Specify the ip address for N2N edge:'
+        description: 'Specify tap ip address for N2N edge:'
         required: false
         default: '172.16.40.122'
         type: string
