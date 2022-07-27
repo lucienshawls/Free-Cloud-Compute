@@ -50,19 +50,9 @@ jobs:
       #   run: |
       #     sudo chmod +x ./macos/edge
       #     sudo ./macos/edge -c $N2N_COMMUNITY -l $N2N_SUPERNODE_HOST:$N2N_SUPERNODE_PORT -a '172.16.40.121' -k $N2N_KEY -A3
-      # - name: whoami
-      #   run: |
-      #     whoami
       # - name: install expect
       #   run: |
       #     brew install expect
-      # - name: change root password
-      #   run: |
-      #     sudo chmod +x ./macos/remove.sh
-      #     sudo ./macos/remove.sh
-      - name: kill firewall
-        run: |
-          sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 0
       - name: Add Pubkey
         env:
           SSH_PUBKEY: ${{ secrets.SSH_PUBKEY }}
@@ -75,12 +65,6 @@ jobs:
           sudo cp -f ./macos/sshd_config /etc/ssh/
           sudo launchctl unload /System/Library/LaunchDaemons/ssh.plist
           sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist
-
-
-      # - name: ssh to self
-      #   run: |
-      #     chmod +x ./macos/ssh_login.sh
-      #     ./macos/ssh_login.sh
       - name: Start FRPC
         env:
           FRP_SERVER_ADDR: ${{ secrets.FRP_SERVER_ADDR }}
