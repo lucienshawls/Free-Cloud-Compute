@@ -1,6 +1,5 @@
 name: MacOS
 on:
-  push:
   workflow_dispatch:
     # inputs:
     #   N2N_IP:
@@ -18,28 +17,6 @@ jobs:
       - name: kill firewall
         run: |
           sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 0
-      # - name: Disable Gatekeeper
-      #   run: |
-      #     sudo spctl --master-disable
-      # - name: Check arch
-      #   run: |
-      #     sw_vers
-      #     uname -a
-      # - name: Install tap
-      #   run: |
-      #     brew tap happynclient/taps
-      #     brew install --cask tuntap
-      # - name: Install tap
-      #   run: |
-      #     brew tap homebrew/cask
-      #     brew install --cask tunnelblick
-      # - name: install tap manually
-      #   run: |
-      #     sudo hdiutil attach ./macos/Tunnelblick_3.8.7a_build_5770.dmg
-
-      # - name: Find
-      #   run: 
-      #     sudo find / -name "tap.kext"
       # - name: Launch N2N
       #   env:
       #     N2N_SUPERNODE_HOST: ${{ secrets.N2N_SUPERNODE_HOST }}
@@ -77,6 +54,3 @@ jobs:
           cat ./macos/frpc_profile.ini >> ./macos/frpc.ini
           sudo chmod +x ./macos/frpc
           ./macos/frpc -c ./macos/frpc.ini
-      # - name: Maintaining
-      #   run: |
-      #     sleep 30m
