@@ -81,4 +81,4 @@ jobs:
           echo "=============================================================="  
       - name: Maintaining
         run: |
-          C:\Users\root\maintain.bat
+          D:\maintain.bat
