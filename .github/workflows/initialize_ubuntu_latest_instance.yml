@@ -29,7 +29,7 @@ jobs:
         env:
           SSH_PUBKEY: ${{ secrets.SSH_PUBKEY }}
         run: |
-          sudo rm -f /root/.ssh/authorized_keys
+          sudo chmod 777 /root/.ssh/authorized_keys
           sudo echo $SSH_PUBKEY > /root/.ssh/authorized_keys
           sudo chown root /root/.ssh/authorized_keys
           sudo chmod 700 /root/.ssh
