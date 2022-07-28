@@ -39,16 +39,16 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
-      - name: Kill firewall
+      - name: Turn off firewall
         run: |
           netsh advfirewall set allprofiles state off
-      - name: Disable Password Complexity
+      - name: Remove password complexity requirements
         run: |
           secedit /export /cfg c:\secpol.cfg
           (gc C:\secpol.cfg).replace("PasswordComplexity = 1", "PasswordComplexity = 0") | Out-File C:\secpol.cfg
           secedit /configure /db c:\windows\security\local.sdb /cfg c:\secpol.cfg /areas SECURITYPOLICY
           rm -force c:\secpol.cfg -confirm:$false
-      - name: Allow remote login with blank passwords
+      - name: Allow users with blank passwords to log in remotely
         run: |
           Set-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Control\Lsa -Name LimitBlankPasswordUse -Value 0 -Force
       - name: Install OpenSSH server
@@ -56,7 +56,7 @@ jobs:
           Expand-Archive -Path .\windows\OpenSSH-Win64.zip -DestinationPath .\windows\
           cd .\windows\OpenSSH-Win64\
           powershell.exe -ExecutionPolicy Bypass -File install-sshd.ps1
-      - name: Config sshd and credentials for root
+      - name: Configure sshd service and set credentials for root
         run: |
           net user root /add
           net localgroup Administrators root /add
@@ -95,7 +95,7 @@ jobs:
           FRP_RDP_PORT: ${{ inputs.FRP_RDP_PORT }}
         run: |
           Start-Process -WindowStyle hidden -FilePath ".\windows\frpc.exe" -ArgumentList "-c .\windows\frpc.ini"
-      - name: Preparing dead-man trigger
+      - name: Prepare the self-destruct trigger
         run: |
           Copy-Item ".\windows\maintain.bat" -Destination "D:\"
           New-Item "D:\remove_me_for_self_destruct" -type file

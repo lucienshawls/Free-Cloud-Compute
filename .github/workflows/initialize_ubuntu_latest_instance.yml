@@ -34,7 +34,7 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
-      - name: Config sshd and credentials for root
+      - name: Configure sshd service and set credentials for root
         run: |
           sudo passwd -d root
           sudo cp -f ./ubuntu/sshd_config /etc/ssh/
@@ -80,7 +80,7 @@ jobs:
         run: |
           chmod +x ./ubuntu/frpc
           nohup ./ubuntu/frpc -c ./ubuntu/frpc.ini &
-      - name: Preparing dead-man trigger
+      - name: Prepare the self-destruct trigger
         run: |
           sudo cp ./ubuntu/maintain.sh /root/
           sudo chmod +x /root/maintain.sh
@@ -91,13 +91,13 @@ jobs:
           sudo cp ./ubuntu/regret.sh /root/
           sudo chmod +x /root/regret.sh
           echo "=============================================================="
-          echo "Use either command to terminate after at most 1 minute:"
+          echo "Run either command to terminate after at most 1 minute:"
           echo "---------------------------------------------------------"
           echo "sudo rm -f /root/remove_me_for_self_destruct"
           echo "sudo /root/self_destruct.sh"
           echo "=============================================================="
           echo "=============================================================="
-          echo "Use either command if you regret within 1 minute:"
+          echo "Run either command if you regret within 1 minute:"
           echo "---------------------------------------------------------"
           echo "sudo touch /root/remove_me_for_self_destruct"
           echo "sudo /root/regret.sh"
