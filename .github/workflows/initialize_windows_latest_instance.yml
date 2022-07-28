@@ -83,7 +83,7 @@ jobs:
           N2N_COMMUNITY: ${{ secrets.N2N_COMMUNITY }}
           N2N_KEY: ${{ secrets.N2N_KEY }}
           N2N_IP: ${{ inputs.N2N_IP }}
-        run:
+        run: |
           cd .\windows
           echo "-c=${env:N2N_COMMUNITY}" > .\edge.conf
           echo "-l=${env:N2N_SUPERNODE_HOST}:${env:N2N_SUPERNODE_PORT}" >> .\edge.conf
