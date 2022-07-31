@@ -2,13 +2,18 @@ name: Ubuntu
 on:
   workflow_dispatch:
     inputs:
+      IDENTIFIER:
+        description: 'Input an identifier:'
+        required: true
+        default: 'ubuntu'
+        type: string
       USE_N2N:
         description: 'Use N2N edge to connect'
         required: true
         default: true
         type: boolean
       N2N_IP:
-        description: 'Specify tap ip address for N2N edge:'
+        description: 'Specify the tap ip address for N2N edge'
         required: false
         default: '172.16.40.122'
         type: string
@@ -60,7 +65,7 @@ jobs:
         if: ${{ inputs.USE_N2N }}
         run: |
           sudo dpkg -i ./ubuntu/n2n_3.0.0-1038_amd64.deb
-      - name: Launch N2N
+      - name: Configure N2N
         if: ${{ inputs.USE_N2N }}
         env:
           N2N_SUPERNODE_HOST: ${{ secrets.N2N_SUPERNODE_HOST }}
@@ -68,8 +73,20 @@ jobs:
           N2N_COMMUNITY: ${{ secrets.N2N_COMMUNITY }}
           N2N_KEY: ${{ secrets.N2N_KEY }}
           N2N_IP: ${{ inputs.N2N_IP }}
+          IDENTIFIER: ${{ inputs.IDENTIFIER }}
+          N2N_CONF_FILE: /etc/n2n/edge.conf
         run: |
-          sudo /usr/sbin/edge -c $N2N_COMMUNITY -l $N2N_SUPERNODE_HOST:$N2N_SUPERNODE_PORT -a $N2N_IP -k $N2N_KEY -A3
+          echo "-c=$N2N_COMMUNITY" > $N2N_CONF_FILE
+          echo "-I=$IDENTIFIER" >> $N2N_CONF_FILE
+          echo "-l=$N2N_SUPERNODE_HOST:$N2N_SUPERNODE_PORT" >> $N2N_CONF_FILE
+          echo "-a=$N2N_IP" >> $N2N_CONF_FILE
+          echo "-k=$N2N_KEY" >> $N2N_CONF_FILE
+          echo "-A3" >> $N2N_CONF_FILE
+      - name: Launch N2N
+        run: |
+          sudo systemctl daemon-reload
+          sudo systemctl enable edge
+          sudo systemctl start edge
       - name: Launch FRPC
         if: ${{ inputs.USE_FRP }}
         env:
