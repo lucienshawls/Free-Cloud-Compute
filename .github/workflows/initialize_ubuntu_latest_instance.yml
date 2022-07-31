@@ -76,7 +76,8 @@ jobs:
           IDENTIFIER: ${{ inputs.IDENTIFIER }}
           N2N_CONF_FILE: /etc/n2n/edge.conf
         run: |
-          sudo echo "-c=$N2N_COMMUNITY" > $N2N_CONF_FILE
+          sudo touch $N2N_CONF_FILE
+          sudo echo "-c=$N2N_COMMUNITY" >> $N2N_CONF_FILE
           sudo echo "-I=$IDENTIFIER" >> $N2N_CONF_FILE
           sudo echo "-l=$N2N_SUPERNODE_HOST:$N2N_SUPERNODE_PORT" >> $N2N_CONF_FILE
           sudo echo "-a=$N2N_IP" >> $N2N_CONF_FILE
