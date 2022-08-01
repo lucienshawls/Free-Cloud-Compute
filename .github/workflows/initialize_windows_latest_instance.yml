@@ -93,6 +93,12 @@ jobs:
         run: |
           cd .\windows\n2n\tap_amd64
           .\tapinstall.exe install OemVista.inf tap0901
+      - name: Install N2N service
+        if: ${{ inputs.USE_N2N }}
+        run: |
+          New-Item "C:\n2n" -type directory
+          Copy-Item ".\windows\n2n\edge.exe" -Destination "C:\n2n\"
+          .\windws\daemon\winsw.exe install .\windows\n2n\edge.xml
       - name: Configure N2N
         if: ${{ inputs.USE_N2N }}
         env:
@@ -110,10 +116,17 @@ jobs:
           echo "-a=${env:N2N_IP}" >> ${env:N2N_CONF_FILE}
           echo "-k=${env:N2N_KEY}" >> ${env:N2N_CONF_FILE}
           echo "-A3" >> ${env:N2N_CONF_FILE}
+          Copy-Item "${env:N2N_CONF_FILE}" -Destination "C:\n2n\"
       - name: Launch N2N
         if: ${{ inputs.USE_N2N }}
         run: |
-          Start-Process -WindowStyle hidden -FilePath ".\windows\n2n\edge.exe" -ArgumentList ".\windows\n2n\edge.conf"
+          net start edge
+      - name: Install FRPC service
+        if: ${{ inputs.USE_FRP }}
+        run: |
+          New-Item "C:\frp" -type directory
+          Copy-Item ".\windows\frp\frpc.exe" -Destination "C:\frp\"
+          .\windws\daemon\winsw.exe install .\windows\frp\frpc.xml
       - name: Configure FRPC
         if: ${{ inputs.USE_FRP }}
         env:
@@ -140,10 +153,11 @@ jobs:
           echo "local_ip = 127.0.0.1" >> ${env:FRP_CONF_FILE}
           echo "local_port = 3389" >> ${env:FRP_CONF_FILE}
           echo "remote_port = ${env:FRP_RDP_PORT}" >> ${env:FRP_CONF_FILE}
+          Copy-Item "${env:FRP_CONF_FILE}" -Destination "C:\frp\"
       - name: Launch FRPC
         if: ${{ inputs.USE_FRP }}
         run: |
-          Start-Process -WindowStyle hidden -FilePath ".\windows\frp\frpc.exe" -ArgumentList "-c .\windows\frp\frpc.ini"
+          net start frpc
       - name: Prepare the self-destruct trigger
         run: |
           Copy-Item ".\windows\daemon\maintain.bat" -Destination "D:\"
