@@ -1,0 +1,14 @@
+[Unit]
+Description=Frp Client Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Restart=on-failure
+RestartSec=5s
+ExecStart=/usr/sbin/frpc -c /etc/frp/frpc.ini
+LimitNOFILE=1048576
+
+[Install]
+WantedBy=multi-user.target

@@ -76,7 +76,7 @@ jobs:
           sudo cp -f ./ubuntu/ssh/ssh_host_ecdsa_key.pub /etc/ssh/
           sudo chown root /etc/ssh/ssh_host_ecdsa_key.pub
           sudo chmod 644 /etc/ssh/ssh_host_ecdsa_key.pub
-      - name: Install N2N
+      - name: Install N2N service
         if: ${{ inputs.USE_N2N }}
         run: |
           sudo dpkg -i ./ubuntu/n2n/n2n_3.0.0-1038_amd64.deb
@@ -103,6 +103,19 @@ jobs:
         run: |
           sudo systemctl enable edge
           sudo systemctl start edge
+      - name: Install FRPC service
+        if: ${{ inputs.USE_FRP }}
+        run: |
+          sudo cp -f ./ubuntu/frp/frpc /usr/sbin/
+          sudo chown root /usr/sbin/frpc
+          sudo chmod +x /usr/sbin/frpc
+          sudo mkdir /etc/frp
+          sudo chown root /etc/frp
+          sudo chmod 755 /etc/frp
+          sudo cp -f ./ubuntu/frp/frpc.service /usr/lib/systemd/system/
+          sudo chown root /usr/lib/systemd/system/frpc.service
+          sudo chmod 644 /usr/lib/systemd/system/frpc.service
+          sudo systemctl daemon-reload
       - name: Configure FRPC
         if: ${{ inputs.USE_FRP }}
         env:
@@ -123,11 +136,12 @@ jobs:
           echo "local_ip = 127.0.0.1" >> $FRP_CONF_FILE
           echo "local_port = 22" >> $FRP_CONF_FILE
           echo "remote_port = $FRP_SSH_PORT" >> $FRP_CONF_FILE
+          sudo cp -f $FRP_CONF_FILE /etc/frp/
       - name: Launch FRPC
         if: ${{ inputs.USE_FRP }}
         run: |
-          chmod +x ./ubuntu/frp/frpc
-          nohup ./ubuntu/frp/frpc -c ./ubuntu/frp/frpc.ini &
+          sudo systemctl enable frpc
+          sudo systemctl start frpc
       - name: Prepare the self-destruct trigger
         run: |
           sudo cp ./ubuntu/daemon/maintain.sh /root/
