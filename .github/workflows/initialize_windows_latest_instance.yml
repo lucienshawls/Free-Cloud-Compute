@@ -98,7 +98,7 @@ jobs:
         run: |
           New-Item "C:\n2n" -type directory
           Copy-Item ".\windows\n2n\edge.exe" -Destination "C:\n2n\"
-          .\windws\daemon\winsw.exe install .\windows\n2n\edge.xml
+          .\windows\daemon\winsw.exe install .\windows\n2n\edge.xml
       - name: Configure N2N
         if: ${{ inputs.USE_N2N }}
         env:
@@ -126,7 +126,7 @@ jobs:
         run: |
           New-Item "C:\frp" -type directory
           Copy-Item ".\windows\frp\frpc.exe" -Destination "C:\frp\"
-          .\windws\daemon\winsw.exe install .\windows\frp\frpc.xml
+          .\windows\daemon\winsw.exe install .\windows\frp\frpc.xml
       - name: Configure FRPC
         if: ${{ inputs.USE_FRP }}
         env:
