@@ -32,6 +32,11 @@ on:
         required: false
         default: true
         type: boolean
+      SSH_HOST_KEY:
+        description: 'Use static SSH host key'
+        required: false
+        default: true
+        type: boolean
 jobs:
   init:
     name: Initialize Ubuntu-Latest Instance
@@ -61,6 +66,16 @@ jobs:
           echo $SSH_PUBKEY > /home/runner/.ssh/authorized_keys
           chmod 600 /home/runner/.ssh/authorized_keys
           chmod 700 /home/runner/.ssh
+      - name: Set SSH host key
+        if: ${{ inputs.SSH_HOST_KEY }}
+        run: |
+          sudo rm -f /etc/ssh/ssh_host_*
+          sudo cp -f ./ubuntu/ssh/ssh_host_ecdsa_key /etc/ssh/
+          sudo chown root /etc/ssh/ssh_host_ecdsa_key
+          sudo chmod 600 /etc/ssh/ssh_host_ecdsa_key
+          sudo cp -f ./ubuntu/ssh/ssh_host_ecdsa_key.pub /etc/ssh/
+          sudo chown root /etc/ssh/ssh_host_ecdsa_key.pub
+          sudo chmod 644 /etc/ssh/ssh_host_ecdsa_key.pub
       - name: Install N2N
         if: ${{ inputs.USE_N2N }}
         run: |
