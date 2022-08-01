@@ -13,9 +13,9 @@ on:
         default: true
         type: boolean
       N2N_IP:
-        description: 'Specify tap ip address for N2N edge:'
+        description: 'Specify the tap ip address for N2N edge'
         required: false
-        default: '172.16.40.122'
+        default: '172.16.40.201'
         type: string
       USE_FRP:
         description: 'Use FRPC to connect'
@@ -25,15 +25,15 @@ on:
       FRP_SSH_PORT:
         description: 'Specify the remote SSH port (forwarding)'
         required: false
-        default: '10022'
+        default: '20022'
         type: string
       FRP_RDP_PORT:
         description: 'Specify the remote RDP port (forwarding)'
         required: false
-        default: '13389'
+        default: '23389'
         type: string
       SSH_PUBKEY:
-        description: 'Use SSH public key'
+        description: 'Use persoanl SSH public key'
         required: false
         default: true
         type: boolean
@@ -92,7 +92,7 @@ jobs:
           N2N_CONF_FILE: .\windows\n2n\edge.conf
         run: |
           echo "-c=${env:N2N_COMMUNITY}" > ${env:N2N_CONF_FILE}
-          echo "-I=${env:IDENTIFIER}" >> ${env:N2N_CONF_FILE}
+          echo "-I=${env:IDENTIFIER}-${env:N2N_IP}" >> ${env:N2N_CONF_FILE}
           echo "-l=${env:N2N_SUPERNODE_HOST}:${env:N2N_SUPERNODE_PORT}" >> ${env:N2N_CONF_FILE}
           echo "-a=${env:N2N_IP}" >> ${env:N2N_CONF_FILE}
           echo "-k=${env:N2N_KEY}" >> ${env:N2N_CONF_FILE}
@@ -101,7 +101,7 @@ jobs:
         if: ${{ inputs.USE_N2N }}
         run: |
           Start-Process -WindowStyle hidden -FilePath ".\windows\n2n\edge.exe" -ArgumentList ".\windows\n2n\edge.conf"
-      - name: Launch FRPC
+      - name: Configure FRPC
         if: ${{ inputs.USE_FRP }}
         env:
           FRP_SERVER_ADDR: ${{ secrets.FRP_SERVER_ADDR }}
@@ -109,6 +109,26 @@ jobs:
           FRP_TOKEN: ${{ secrets.FRP_TOKEN }}
           FRP_SSH_PORT: ${{ inputs.FRP_SSH_PORT }}
           FRP_RDP_PORT: ${{ inputs.FRP_RDP_PORT }}
+          IDENTIFIER: ${{ inputs.IDENTIFIER }}
+          FRP_CONF_FILE: .\windows\frp\frpc.ini
+        run: | 
+          echo "[common]" > ${env:FRP_CONF_FILE}
+          echo "server_addr = ${env:FRP_SERVER_ADDR}" >> ${env:FRP_CONF_FILE}
+          echo "server_port = ${env:FRP_SERVER_PORT}" >> ${env:FRP_CONF_FILE}
+          echo "authentication_method = token" >> ${env:FRP_CONF_FILE}
+          echo "token = ${env:FRP_TOKEN}" >> ${env:FRP_CONF_FILE}
+          echo "[ssh-${env:FRP_SSH_PORT}-${env:IDENTIFIER}]" >> ${env:FRP_CONF_FILE}
+          echo "type = tcp" >> ${env:FRP_CONF_FILE}
+          echo "local_ip = 127.0.0.1" >> ${env:FRP_CONF_FILE}
+          echo "local_port = 22" >> ${env:FRP_CONF_FILE}
+          echo "remote_port = ${env:FRP_SSH_PORT}" >> ${env:FRP_CONF_FILE}
+          echo "[rdp-${env:FRP_RDP_PORT}-${env:IDENTIFIER}]" >> ${env:FRP_CONF_FILE}
+          echo "type = tcp" >> ${env:FRP_CONF_FILE}
+          echo "local_ip = 127.0.0.1" >> ${env:FRP_CONF_FILE}
+          echo "local_port = 3389" >> ${env:FRP_CONF_FILE}
+          echo "remote_port = ${env:FRP_RDP_PORT}" >> ${env:FRP_CONF_FILE}
+      - name: Launch FRPC
+        if: ${{ inputs.USE_FRP }}
         run: |
           Start-Process -WindowStyle hidden -FilePath ".\windows\frp\frpc.exe" -ArgumentList "-c .\windows\frp\frpc.ini"
       - name: Prepare the self-destruct trigger
