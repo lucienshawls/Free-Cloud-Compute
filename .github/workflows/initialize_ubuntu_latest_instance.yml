@@ -89,20 +89,18 @@ jobs:
           N2N_KEY: ${{ secrets.N2N_KEY }}
           N2N_IP: ${{ inputs.N2N_IP }}
           IDENTIFIER: ${{ inputs.IDENTIFIER }}
-          N2N_CONF_FILE: /etc/n2n/edge.conf
+          N2N_CONF_FILE: ./ubuntu/n2n/edge.conf
         run: |
-          sudo touch $N2N_CONF_FILE
-          sudo chmod -R 777 /etc/n2n
-          sudo echo "-c=$N2N_COMMUNITY" >> $N2N_CONF_FILE
-          sudo echo "-I=$IDENTIFIER" >> $N2N_CONF_FILE
-          sudo echo "-l=$N2N_SUPERNODE_HOST:$N2N_SUPERNODE_PORT" >> $N2N_CONF_FILE
-          sudo echo "-a=$N2N_IP" >> $N2N_CONF_FILE
-          sudo echo "-k=$N2N_KEY" >> $N2N_CONF_FILE
-          sudo echo "-A3" >> $N2N_CONF_FILE
+          echo "-c=$N2N_COMMUNITY" > $N2N_CONF_FILE
+          echo "-I=$IDENTIFIER" >> $N2N_CONF_FILE
+          echo "-l=$N2N_SUPERNODE_HOST:$N2N_SUPERNODE_PORT" >> $N2N_CONF_FILE
+          echo "-a=$N2N_IP" >> $N2N_CONF_FILE
+          echo "-k=$N2N_KEY" >> $N2N_CONF_FILE
+          echo "-A3" >> $N2N_CONF_FILE
+          sudo cp -f $N2N_CONF_FILE /etc/n2n/
       - name: Launch N2N
         if: ${{ inputs.USE_N2N }}
         run: |
-          sudo systemctl daemon-reload
           sudo systemctl enable edge
           sudo systemctl start edge
       - name: Configure FRPC
