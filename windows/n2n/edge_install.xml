@@ -1,0 +1,7 @@
+<service>
+  <id>edge</id>
+  <name>N2N Edge Service</name>
+  <description>This is an N2N edge service.</description>
+  <executable>C:\n2n\edge.exe</executable>
+  <arguments>C:\n2n\edge.conf</arguments>
+</service>
