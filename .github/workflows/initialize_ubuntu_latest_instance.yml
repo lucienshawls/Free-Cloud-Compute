@@ -42,7 +42,7 @@ jobs:
       - name: Configure sshd service and set credentials for root
         run: |
           sudo passwd -d root
-          sudo cp -f ./ubuntu/sshd_config /etc/ssh/
+          sudo cp -f ./ubuntu/ssh/sshd_config /etc/ssh/
           sudo systemctl restart sshd
       - name: Set SSH public key
         if: ${{ inputs.SSH_PUBKEY }}
@@ -64,7 +64,7 @@ jobs:
       - name: Install N2N
         if: ${{ inputs.USE_N2N }}
         run: |
-          sudo dpkg -i ./ubuntu/n2n_3.0.0-1038_amd64.deb
+          sudo dpkg -i ./ubuntu/n2n/n2n_3.0.0-1038_amd64.deb
       - name: Configure N2N
         if: ${{ inputs.USE_N2N }}
         env:
@@ -98,17 +98,17 @@ jobs:
           FRP_TOKEN: ${{ secrets.FRP_TOKEN }}
           FRP_SSH_PORT: ${{ inputs.FRP_SSH_PORT }}
         run: |
-          chmod +x ./ubuntu/frpc
-          nohup ./ubuntu/frpc -c ./ubuntu/frpc.ini &
+          chmod +x ./ubuntu/frp/frpc
+          nohup ./ubuntu/frp/frpc -c ./ubuntu/frp/frpc.ini &
       - name: Prepare the self-destruct trigger
         run: |
-          sudo cp ./ubuntu/maintain.sh /root/
+          sudo cp ./ubuntu/daemon/maintain.sh /root/
           sudo chmod +x /root/maintain.sh
           sudo touch /root/remove_me_for_self_destruct
           sudo chmod +r /root/remove_me_for_self_destruct
-          sudo cp ./ubuntu/self_destruct.sh /root/
+          sudo cp ./ubuntu/daemon/self_destruct.sh /root/
           sudo chmod +x /root/self_destruct.sh
-          sudo cp ./ubuntu/regret.sh /root/
+          sudo cp ./ubuntu/daemon/regret.sh /root/
           sudo chmod +x /root/regret.sh
           echo "=============================================================="
           echo "Run either command to terminate after at most 1 minute:"

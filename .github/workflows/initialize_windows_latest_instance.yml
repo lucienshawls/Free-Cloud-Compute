@@ -2,6 +2,11 @@ name: Windows
 on:
   workflow_dispatch:
     inputs:
+      IDENTIFIER:
+        description: 'Input an identifier:'
+        required: true
+        default: 'windows'
+        type: string
       USE_N2N:
         description: 'Use N2N edge to connect'
         required: true
@@ -53,14 +58,14 @@ jobs:
           Set-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Control\Lsa -Name LimitBlankPasswordUse -Value 0 -Force
       - name: Install OpenSSH server
         run: |
-          Expand-Archive -Path .\windows\OpenSSH-Win64.zip -DestinationPath .\windows\
-          cd .\windows\OpenSSH-Win64\
+          Expand-Archive -Path .\windows\ssh\OpenSSH-Win64.zip -DestinationPath .\windows\ssh
+          cd .\windows\ssh\OpenSSH-Win64\
           powershell.exe -ExecutionPolicy Bypass -File install-sshd.ps1
       - name: Configure sshd service and set credentials for root
         run: |
           net user root /add
           net localgroup Administrators root /add
-          Copy-Item ".\windows\sshd_config" -Destination "C:\ProgramData\ssh\"
+          Copy-Item ".\windows\ssh\sshd_config" -Destination "C:\ProgramData\ssh\"
           New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -PropertyType String -Force
           net start sshd
       - name: Set SSH public key
@@ -73,7 +78,7 @@ jobs:
       - name: Install TAP Windows Adapter V9
         if: ${{ inputs.USE_N2N }}
         run: |
-          cd .\windows\tap_amd64
+          cd .\windows\n2n\tap_amd64
           .\tapinstall.exe install OemVista.inf tap0901
       - name: Configure N2N
         if: ${{ inputs.USE_N2N }}
@@ -83,18 +88,19 @@ jobs:
           N2N_COMMUNITY: ${{ secrets.N2N_COMMUNITY }}
           N2N_KEY: ${{ secrets.N2N_KEY }}
           N2N_IP: ${{ inputs.N2N_IP }}
+          IDENTIFIER: ${{ inputs.IDENTIFIER }}
+          N2N_CONF_FILE: .\windows\n2n\edge.conf
         run: |
-          cd .\windows
-          echo "-c=${env:N2N_COMMUNITY}" > .\edge.conf
-          echo "-l=${env:N2N_SUPERNODE_HOST}:${env:N2N_SUPERNODE_PORT}" >> .\edge.conf
-          echo "-a=${env:N2N_IP}" >> .\edge.conf
-          echo "-k=${env:N2N_KEY}" >> .\edge.conf
-          echo "-A3" >> .\edge.conf
-          cd ..\
+          echo "-c=${env:N2N_COMMUNITY}" > ${env:N2N_CONF_FILE}
+          echo "-I=${env:IDENTIFIER}" >> ${env:N2N_CONF_FILE}
+          echo "-l=${env:N2N_SUPERNODE_HOST}:${env:N2N_SUPERNODE_PORT}" >> ${env:N2N_CONF_FILE}
+          echo "-a=${env:N2N_IP}" >> ${env:N2N_CONF_FILE}
+          echo "-k=${env:N2N_KEY}" >> ${env:N2N_CONF_FILE}
+          echo "-A3" >> ${env:N2N_CONF_FILE}
       - name: Launch N2N
         if: ${{ inputs.USE_N2N }}
         run: |
-          Start-Process -WindowStyle hidden -FilePath ".\windows\edge.exe" -ArgumentList ".\windows\edge.conf"
+          Start-Process -WindowStyle hidden -FilePath ".\windows\n2n\edge.exe" -ArgumentList ".\windows\n2n\edge.conf"
       - name: Launch FRPC
         if: ${{ inputs.USE_FRP }}
         env:
@@ -104,13 +110,13 @@ jobs:
           FRP_SSH_PORT: ${{ inputs.FRP_SSH_PORT }}
           FRP_RDP_PORT: ${{ inputs.FRP_RDP_PORT }}
         run: |
-          Start-Process -WindowStyle hidden -FilePath ".\windows\frpc.exe" -ArgumentList "-c .\windows\frpc.ini"
+          Start-Process -WindowStyle hidden -FilePath ".\windows\frp\frpc.exe" -ArgumentList "-c .\windows\frp\frpc.ini"
       - name: Prepare the self-destruct trigger
         run: |
-          Copy-Item ".\windows\maintain.bat" -Destination "D:\"
+          Copy-Item ".\windows\daemon\maintain.bat" -Destination "D:\"
           New-Item "D:\remove_me_for_self_destruct" -type file
-          Copy-Item ".\windows\self_destruct.bat" -Destination "D:\"
-          Copy-Item ".\windows\regret.bat" -Destination "D:\"
+          Copy-Item ".\windows\daemon\self_destruct.bat" -Destination "D:\"
+          Copy-Item ".\windows\daemon\regret.bat" -Destination "D:\"
           echo "=============================================================="
           echo "Run this command to terminate after at most 1 minute:"
           echo "---------------------------------------------------------"
