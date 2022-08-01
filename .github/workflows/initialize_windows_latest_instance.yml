@@ -37,6 +37,11 @@ on:
         required: false
         default: true
         type: boolean
+      SSH_HOST_KEY:
+        description: 'Use static SSH host key'
+        required: false
+        default: true
+        type: boolean
 jobs:
   init:
     name: Initialize Windows-Latest Instance
@@ -75,6 +80,14 @@ jobs:
         run: |
           echo ${env:SSH_PUBKEY} > "C:\ProgramData\ssh\administrators_authorized_keys"
           icacls.exe "C:\ProgramData\ssh\administrators_authorized_keys" /inheritance:r /grant "Administrators:F" /grant "SYSTEM:F"
+      - name: Set SSH host key
+        if: ${{ inputs.SSH_HOST_KEY }}
+        run: |
+          Del C:\ProgramData\ssh\ssh_host_*
+          Copy-Item ".\windows\ssh\ssh_host_ecdsa_key" -Destination "C:\ProgramData\ssh\"
+          icacls.exe "C:\ProgramData\ssh\ssh_host_ecdsa_key" /inheritance:r /grant "Administrators:F" /grant "SYSTEM:F"
+          Copy-Item ".\windows\ssh\ssh_host_ecdsa_key.pub" -Destination "C:\ProgramData\ssh\"
+          icacls.exe "C:\ProgramData\ssh\ssh_host_ecdsa_key.pub" /inheritance:r /grant "Administrators:F" /grant "SYSTEM:F"
       - name: Install TAP Windows Adapter V9
         if: ${{ inputs.USE_N2N }}
         run: |
