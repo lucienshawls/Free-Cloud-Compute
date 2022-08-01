@@ -1,7 +1,0 @@
-<service>
-  <id>frpc</id>
-  <name>FRP Client Service</name>
-  <description>This is an FRP client service.</description>
-  <executable>C:\frp\frpc.exe</executable>
-  <arguments>-c C:\frp\frpc.ini</arguments>
-</service>
