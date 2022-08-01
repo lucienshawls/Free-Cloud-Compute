@@ -15,7 +15,7 @@ on:
       N2N_IP:
         description: 'Specify the tap ip address for N2N edge'
         required: false
-        default: '172.16.40.122'
+        default: '172.16.40.101'
         type: string
       USE_FRP:
         description: 'Use FRPC to connect'
@@ -28,7 +28,7 @@ on:
         default: '10022'
         type: string
       SSH_PUBKEY:
-        description: 'Use SSH public key'
+        description: 'Use personal SSH public key'
         required: false
         default: true
         type: boolean
