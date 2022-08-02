@@ -58,11 +58,6 @@ jobs:
           SSH_PUBKEY: ${{ secrets.SSH_PUBKEY }}
         run: |
           echo $SSH_PUBKEY > ./macos/ssh/authorized_keys
-          sudo mkdir /root/.ssh
-          sudo cp -f ./macos/ssh/authorized_keys /root/.ssh/
-          sudo chown root /root/.ssh/authorized_keys
-          sudo chmod 600 /root/.ssh/authorized_keys
-          sudo chmod 700 /root/.ssh
           mkdir /Users/runner/.ssh
           cp -f ./macos/ssh/authorized_keys /Users/runner/.ssh/
           chown runner /Users/runner/.ssh/authorized_keys
