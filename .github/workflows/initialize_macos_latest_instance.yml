@@ -92,4 +92,4 @@ jobs:
           sudo nohup ./macos/frp/frpc -c ./macos/frp/frpc.ini &
       - name: Maintaining
         run: |
-          sleep 5m
+          sleep 300
