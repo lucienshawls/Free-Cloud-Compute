@@ -89,4 +89,7 @@ jobs:
       - name: Launch FRPC
         if: ${{ inputs.USE_FRP }}
         run: |
-          sudo ./macos/frp/frpc -c ./macos/frp/frpc.ini
+          sudo nohup ./macos/frp/frpc -c ./macos/frp/frpc.ini &
+      - name: Maintaining
+        run: |
+          sleep 5m
