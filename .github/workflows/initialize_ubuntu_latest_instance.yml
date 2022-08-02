@@ -44,9 +44,10 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
-      - name: Configure sshd service and set credentials for root
+      - name: Configure sshd service and set credentials
         run: |
           sudo passwd -d root
+          sudo passwd -d runner
           sudo cp -f ./ubuntu/ssh/sshd_config /etc/ssh/
           sudo systemctl restart sshd
       - name: Set SSH public key
@@ -64,6 +65,7 @@ jobs:
           sudo chmod 700 /root
           mkdir /home/runner/.ssh
           echo $SSH_PUBKEY > /home/runner/.ssh/authorized_keys
+          chown runner /home/runner/.ssh/authorized_keys
           chmod 600 /home/runner/.ssh/authorized_keys
           chmod 700 /home/runner/.ssh
       - name: Set SSH host key

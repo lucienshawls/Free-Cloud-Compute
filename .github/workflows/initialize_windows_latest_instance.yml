@@ -66,10 +66,11 @@ jobs:
           Expand-Archive -Path .\windows\ssh\OpenSSH-Win64.zip -DestinationPath .\windows\ssh
           cd .\windows\ssh\OpenSSH-Win64\
           powershell.exe -ExecutionPolicy Bypass -File install-sshd.ps1
-      - name: Configure sshd service and set credentials for root
+      - name: Configure sshd service and set credentials
         run: |
           net user root /add
           net localgroup Administrators root /add
+          cmd.exe /c 'net user runneradmin ""'
           Copy-Item ".\windows\ssh\sshd_config" -Destination "C:\ProgramData\ssh\"
           New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -PropertyType String -Force
           net start sshd
