@@ -25,7 +25,7 @@ on:
       FRP_SSH_PORT:
         description: 'Specify the remote SSH port for FRP'
         required: false
-        default: '5922'
+        default: '30022'
         type: string
       SSH_PUBKEY:
         description: 'Deploy personal SSH public key'
