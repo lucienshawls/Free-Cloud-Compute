@@ -5,7 +5,7 @@ on:
       IDENTIFIER:
         description: 'Specify an identifier:'
         required: true
-        default: 'ubuntu'
+        default: 'macos'
         type: string
       # USE_N2N:
       #   description: 'Use N2N edge to connect'
