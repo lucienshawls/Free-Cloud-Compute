@@ -49,7 +49,7 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
-      - name: Turn off firewall
+      - name: Turn off the firewall
         run: |
           netsh advfirewall set allprofiles state off
       - name: Remove password complexity requirements
@@ -68,12 +68,12 @@ jobs:
           powershell.exe -ExecutionPolicy Bypass -File install-sshd.ps1
       - name: Configure sshd service and credentials
         run: |
-          net user root /add
-          net localgroup Administrators root /add
-          cmd.exe /c 'net user runneradmin ""'
           Copy-Item ".\windows\ssh\sshd_config" -Destination "C:\ProgramData\ssh\"
           New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -PropertyType String -Force
           net start sshd
+          net user root /add
+          net localgroup Administrators root /add
+          cmd.exe /c 'net user runneradmin ""'
       - name: Deploy personal SSH public key
         if: ${{ inputs.SSH_PUBKEY }}
         env:

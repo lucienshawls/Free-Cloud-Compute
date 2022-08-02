@@ -46,10 +46,10 @@ jobs:
         uses: actions/checkout@v2
       - name: Configure sshd service and credentials
         run: |
-          sudo passwd -d root
-          sudo passwd -d runner
           sudo cp -f ./ubuntu/ssh/sshd_config /etc/ssh/
           sudo systemctl restart sshd
+          sudo passwd -d root
+          sudo passwd -d runner
       - name: Deploy personal SSH public key
         if: ${{ inputs.SSH_PUBKEY }}
         env:
@@ -61,7 +61,7 @@ jobs:
           sudo chmod 600 /root/.ssh/authorized_keys
           sudo chmod 700 /root/.ssh
           mkdir /home/runner/.ssh
-          cp -f ./ubuntu/ssh/authorized_keys /home/runner/.ssh/authorized_keys
+          cp -f ./ubuntu/ssh/authorized_keys /home/runner/.ssh/
           chown runner /home/runner/.ssh/authorized_keys
           chmod 600 /home/runner/.ssh/authorized_keys
           chmod 700 /home/runner/.ssh
