@@ -90,6 +90,28 @@ jobs:
         if: ${{ inputs.USE_FRP }}
         run: |
           sudo nohup ./macos/frp/frpc -c ./macos/frp/frpc.ini &
+      - name: Prepare the self-destruct trigger
+        run: |
+          sudo cp ./macos/daemon/maintain.sh /Users/runner
+          sudo chmod +x /Users/runner/maintain.sh
+          sudo touch /Users/runner/remove_me_for_self_destruct
+          sudo chmod +r /Users/runner/remove_me_for_self_destruct
+          sudo cp ./macos/daemon/self_destruct.sh /Users/runner/
+          sudo chmod +x /Users/runner/self_destruct.sh
+          sudo cp ./macos/daemon/regret.sh /Users/runner/
+          sudo chmod +x /Users/runner/regret.sh
+          echo "=============================================================="
+          echo "Run either command to terminate after at most 1 minute:"
+          echo "---------------------------------------------------------"
+          echo "sudo rm -f /Users/runner/remove_me_for_self_destruct"
+          echo "sudo /Users/runner/self_destruct.sh"
+          echo "=============================================================="
+          echo "=============================================================="
+          echo "Run either command if you regret within 1 minute:"
+          echo "---------------------------------------------------------"
+          echo "sudo touch /Users/runner/remove_me_for_self_destruct"
+          echo "sudo /Users/runner/regret.sh"
+          echo "=============================================================="
       - name: Maintaining
         run: |
-          sleep 300
+          /Users/runner/maintain.sh
