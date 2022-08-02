@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       IDENTIFIER:
-        description: 'Input an identifier:'
+        description: 'Specify an identifier:'
         required: true
         default: 'ubuntu'
         type: string
@@ -23,17 +23,17 @@ on:
         default: false
         type: boolean
       FRP_SSH_PORT:
-        description: 'Specify the remote SSH port (forwarding)'
+        description: 'Specify the remote SSH port for FRP'
         required: false
         default: '10022'
         type: string
       SSH_PUBKEY:
-        description: 'Use personal SSH public key'
+        description: 'Deploy personal SSH public key'
         required: false
         default: true
         type: boolean
       SSH_HOST_KEY:
-        description: 'Use static SSH host key'
+        description: 'Deploy static SSH host key'
         required: false
         default: true
         type: boolean
@@ -44,29 +44,28 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
-      - name: Configure sshd service and set credentials for root
+      - name: Configure sshd service and credentials
         run: |
-          sudo passwd -d root
           sudo cp -f ./ubuntu/ssh/sshd_config /etc/ssh/
           sudo systemctl restart sshd
-      - name: Set SSH public key
+          sudo passwd -d root
+          sudo passwd -d runner
+      - name: Deploy personal SSH public key
         if: ${{ inputs.SSH_PUBKEY }}
         env:
           SSH_PUBKEY: ${{ secrets.SSH_PUBKEY }}
         run: |
-          sudo chmod 777 /root
-          sudo chmod 777 /root/.ssh
-          sudo chmod 777 /root/.ssh/authorized_keys
-          sudo echo $SSH_PUBKEY > /root/.ssh/authorized_keys
+          echo $SSH_PUBKEY > ./ubuntu/ssh/authorized_keys
+          sudo cp -f ./ubuntu/ssh/authorized_keys /root/.ssh/
           sudo chown root /root/.ssh/authorized_keys
           sudo chmod 600 /root/.ssh/authorized_keys
           sudo chmod 700 /root/.ssh
-          sudo chmod 700 /root
           mkdir /home/runner/.ssh
-          echo $SSH_PUBKEY > /home/runner/.ssh/authorized_keys
+          cp -f ./ubuntu/ssh/authorized_keys /home/runner/.ssh/
+          chown runner /home/runner/.ssh/authorized_keys
           chmod 600 /home/runner/.ssh/authorized_keys
           chmod 700 /home/runner/.ssh
-      - name: Set SSH host key
+      - name: Deploy static SSH host key
         if: ${{ inputs.SSH_HOST_KEY }}
         run: |
           sudo rm -f /etc/ssh/ssh_host_*

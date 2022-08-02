@@ -1,12 +1,42 @@
 name: MacOS
 on:
   workflow_dispatch:
-    # inputs:
-    #   N2N_IP:
-    #     description: 'Assign the local ip address for N2N edge:'
-    #     required: true
-    #     default: '172.16.40.122'
-    #     type: string
+    inputs:
+      IDENTIFIER:
+        description: 'Specify an identifier:'
+        required: true
+        default: 'macos'
+        type: string
+      # USE_N2N:
+      #   description: 'Use N2N edge to connect'
+      #   required: true
+      #   default: true
+      #   type: boolean
+      # N2N_IP:
+      #   description: 'Specify the tap ip address for N2N edge'
+      #   required: false
+      #   default: '172.16.40.101'
+      #   type: string
+      USE_FRP:
+        description: 'Use FRPC to connect'
+        required: true
+        default: true
+        type: boolean
+      FRP_SSH_PORT:
+        description: 'Specify the remote SSH port for FRP'
+        required: false
+        default: '30022'
+        type: string
+      SSH_PUBKEY:
+        description: 'Deploy personal SSH public key'
+        required: false
+        default: true
+        type: boolean
+      # SSH_HOST_KEY:
+      #   description: 'Deploy static SSH host key'
+      #   required: false
+      #   default: true
+      #   type: boolean
 jobs:
   init:
     name: Initialize MacOS-Latest Instance
@@ -14,43 +44,74 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
-      - name: kill firewall
+      - name: Turn off the firewall
         run: |
           sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 0
-      # - name: Launch N2N
-      #   env:
-      #     N2N_SUPERNODE_HOST: ${{ secrets.N2N_SUPERNODE_HOST }}
-      #     N2N_SUPERNODE_PORT: ${{ secrets.N2N_SUPERNODE_PORT }}
-      #     N2N_COMMUNITY: ${{ secrets.N2N_COMMUNITY }}
-      #     N2N_KEY: ${{ secrets.N2N_KEY }}
-      #     # N2N_IP: ${{ inputs.N2N_IP }}
-      #   run: |
-      #     sudo chmod +x ./macos/edge
-      #     sudo ./macos/edge -c $N2N_COMMUNITY -l $N2N_SUPERNODE_HOST:$N2N_SUPERNODE_PORT -a '172.16.40.121' -k $N2N_KEY -A3
-      # - name: install expect
-      #   run: |
-      #     brew install expect
-      - name: Add Pubkey
+      - name: Configure sshd service
+        run: |
+          sudo cp -f ./macos/ssh/sshd_config /etc/ssh/
+          sudo launchctl unload /System/Library/LaunchDaemons/ssh.plist
+          sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist
+      - name: Deploy personal SSH public key
+        if: ${{ inputs.SSH_PUBKEY }}
         env:
           SSH_PUBKEY: ${{ secrets.SSH_PUBKEY }}
         run: |
-          sudo echo $SSH_PUBKEY > /Users/runner/.ssh/authorized_keys
-          chmod 700 /Users/runner/.ssh
+          echo $SSH_PUBKEY > ./macos/ssh/authorized_keys
+          cp -f ./macos/ssh/authorized_keys /Users/runner/.ssh/
+          chown runner /Users/runner/.ssh/authorized_keys
           chmod 600 /Users/runner/.ssh/authorized_keys
-      - name: Config sshd
+          chmod 700 /Users/runner/.ssh
+      - name: Install FRPC service
+        if: ${{ inputs.USE_FRP }}
         run: |
-          sudo cp -f ./macos/sshd_config /etc/ssh/
-          sudo launchctl unload /System/Library/LaunchDaemons/ssh.plist
-          sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist
-      - name: Start FRPC
+          chmod +x ./macos/frp/frpc
+      - name: Configure FRPC
+        if: ${{ inputs.USE_FRP }}
         env:
           FRP_SERVER_ADDR: ${{ secrets.FRP_SERVER_ADDR }}
           FRP_SERVER_PORT: ${{ secrets.FRP_SERVER_PORT }}
           FRP_TOKEN: ${{ secrets.FRP_TOKEN }}
+          FRP_SSH_PORT: ${{ inputs.FRP_SSH_PORT }}
+          IDENTIFIER: ${{ inputs.IDENTIFIER }}
+          FRP_CONF_FILE: ./macos/frp/frpc.ini
         run: |
-          echo "server_addr = $FRP_SERVER_ADDR" >> ./macos/frpc.ini
-          echo "server_port = $FRP_SERVER_PORT" >> ./macos/frpc.ini
-          echo "token = $FRP_TOKEN" >> ./macos/frpc.ini
-          cat ./macos/frpc_profile.ini >> ./macos/frpc.ini
-          sudo chmod +x ./macos/frpc
-          ./macos/frpc -c ./macos/frpc.ini
+          echo "[common]" > $FRP_CONF_FILE
+          echo "server_addr = $FRP_SERVER_ADDR" >> $FRP_CONF_FILE
+          echo "server_port = $FRP_SERVER_PORT" >> $FRP_CONF_FILE
+          echo "authentication_method = token" >> $FRP_CONF_FILE
+          echo "token = $FRP_TOKEN" >> $FRP_CONF_FILE
+          echo "[ssh-$FRP_SSH_PORT-$IDENTIFIER]" >> $FRP_CONF_FILE
+          echo "type = tcp" >> $FRP_CONF_FILE
+          echo "local_ip = 127.0.0.1" >> $FRP_CONF_FILE
+          echo "local_port = 22" >> $FRP_CONF_FILE
+          echo "remote_port = $FRP_SSH_PORT" >> $FRP_CONF_FILE
+      - name: Launch FRPC
+        if: ${{ inputs.USE_FRP }}
+        run: |
+          sudo nohup ./macos/frp/frpc -c ./macos/frp/frpc.ini &
+      - name: Prepare the self-destruct trigger
+        run: |
+          sudo cp ./macos/daemon/maintain.sh /Users/runner
+          sudo chmod +x /Users/runner/maintain.sh
+          sudo touch /Users/runner/remove_me_for_self_destruct
+          sudo chmod +r /Users/runner/remove_me_for_self_destruct
+          sudo cp ./macos/daemon/self_destruct.sh /Users/runner/
+          sudo chmod +x /Users/runner/self_destruct.sh
+          sudo cp ./macos/daemon/regret.sh /Users/runner/
+          sudo chmod +x /Users/runner/regret.sh
+          echo "=============================================================="
+          echo "Run either command to terminate after at most 1 minute:"
+          echo "---------------------------------------------------------"
+          echo "sudo rm -f /Users/runner/remove_me_for_self_destruct"
+          echo "sudo /Users/runner/self_destruct.sh"
+          echo "=============================================================="
+          echo "=============================================================="
+          echo "Run either command if you regret within 1 minute:"
+          echo "---------------------------------------------------------"
+          echo "sudo touch /Users/runner/remove_me_for_self_destruct"
+          echo "sudo /Users/runner/regret.sh"
+          echo "=============================================================="
+      - name: Maintaining
+        run: |
+          /Users/runner/maintain.sh

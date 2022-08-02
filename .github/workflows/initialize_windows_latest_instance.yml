@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       IDENTIFIER:
-        description: 'Input an identifier:'
+        description: 'Specify an identifier:'
         required: true
         default: 'windows'
         type: string
@@ -23,22 +23,22 @@ on:
         default: false
         type: boolean
       FRP_SSH_PORT:
-        description: 'Specify the remote SSH port (forwarding)'
+        description: 'Specify the remote SSH port for FRP'
         required: false
         default: '20022'
         type: string
       FRP_RDP_PORT:
-        description: 'Specify the remote RDP port (forwarding)'
+        description: 'Specify the remote RDP port for FRP'
         required: false
         default: '23389'
         type: string
       SSH_PUBKEY:
-        description: 'Use persoanl SSH public key'
+        description: 'Deploy persoanl SSH public key'
         required: false
         default: true
         type: boolean
       SSH_HOST_KEY:
-        description: 'Use static SSH host key'
+        description: 'Deploy static SSH host key'
         required: false
         default: true
         type: boolean
@@ -49,7 +49,7 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
-      - name: Turn off firewall
+      - name: Turn off the firewall
         run: |
           netsh advfirewall set allprofiles state off
       - name: Remove password complexity requirements
@@ -66,21 +66,22 @@ jobs:
           Expand-Archive -Path .\windows\ssh\OpenSSH-Win64.zip -DestinationPath .\windows\ssh
           cd .\windows\ssh\OpenSSH-Win64\
           powershell.exe -ExecutionPolicy Bypass -File install-sshd.ps1
-      - name: Configure sshd service and set credentials for root
+      - name: Configure sshd service and credentials
         run: |
-          net user root /add
-          net localgroup Administrators root /add
           Copy-Item ".\windows\ssh\sshd_config" -Destination "C:\ProgramData\ssh\"
           New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -PropertyType String -Force
           net start sshd
-      - name: Set SSH public key
+          net user root /add
+          net localgroup Administrators root /add
+          cmd.exe /c 'net user runneradmin ""'
+      - name: Deploy personal SSH public key
         if: ${{ inputs.SSH_PUBKEY }}
         env:
           SSH_PUBKEY: ${{ secrets.SSH_PUBKEY }}
         run: |
           echo ${env:SSH_PUBKEY} > "C:\ProgramData\ssh\administrators_authorized_keys"
           icacls.exe "C:\ProgramData\ssh\administrators_authorized_keys" /inheritance:r /grant "Administrators:F" /grant "SYSTEM:F"
-      - name: Set SSH host key
+      - name: Deploy static SSH host key
         if: ${{ inputs.SSH_HOST_KEY }}
         run: |
           Del C:\ProgramData\ssh\ssh_host_*
