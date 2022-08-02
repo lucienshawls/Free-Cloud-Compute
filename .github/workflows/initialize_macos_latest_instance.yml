@@ -49,7 +49,7 @@ jobs:
           sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 0
       - name: Configure sshd service
         run: |
-          sudo cp -f ./macos/sshd_config /etc/ssh/
+          sudo cp -f ./macos/ssh/sshd_config /etc/ssh/
           sudo launchctl unload /System/Library/LaunchDaemons/ssh.plist
           sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist
       - name: Deploy personal SSH public key
