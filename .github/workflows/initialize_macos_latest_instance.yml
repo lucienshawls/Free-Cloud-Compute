@@ -58,7 +58,6 @@ jobs:
           SSH_PUBKEY: ${{ secrets.SSH_PUBKEY }}
         run: |
           echo $SSH_PUBKEY > ./macos/ssh/authorized_keys
-          mkdir /Users/runner/.ssh
           cp -f ./macos/ssh/authorized_keys /Users/runner/.ssh/
           chown runner /Users/runner/.ssh/authorized_keys
           chmod 600 /Users/runner/.ssh/authorized_keys
