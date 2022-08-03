@@ -31,11 +31,11 @@ For more information, please visit [ntop/n2n](https://github.com/ntop/n2n).
 
 **What you should do before connecting to the instances:**
 1. Find an available supernode and set up supernode info on GitHub.
-Generate the following GitHub Actions secrets:
+Add the following GitHub Actions repository secrets:
     - `N2N_SUPERNODE_HOST`: the host or ip address of the supernode.
     - `N2N_SUPERNODE_PORT`: the port of the supernode.
 2. Set up edge info. The instance will use the information below to join the virtual network.
-Generate the following GitHub Actions secrets:
+Add the following GitHub Actions repository secrets:
     - `N2N_COMMUNITY`: the community name of intranet created by N2N. It can be arbitrarily assigned unless the supernode has restrictions.
     - `N2N_KEY`: the secret key for AES encryption. It can be set arbitrarily.
 3. Run edge and connect to the supernode on your personal computer.
@@ -62,10 +62,18 @@ Unfortunately, you will have to assign different ports for every service on the 
 
 **What you should do before connecting to the instances:**
 1. Set up frp info and token.
-Generate the following GitHub Actions secrets:
+Add the following GitHub Actions repository secrets:
     - `FRP_SERVER_ADDR`: the server host or address of frps.
     - `FRP_SERVER_PORT`: the server port of frps for connections with frpc
     - `FRP_TOKEN`: token for authentication (specified in the config file of frps).
+### Other preparations
+- Personal SSH public key
+  You can add persoanl SSH public keys to the instances so that you may use public key to authorize SSH login.
+  To deploy personal public keys, please do the following.
+  1. Generate an SSH key pair using command `ssh-keygen`. Ignore this step and proceed if you have already have a pair.
+  2. Copy all contents from file `id_rsa.pub` or public key files (`*.pub`) with other names. This is your public key.
+  3. Add this GitHub Actions repository secret:
+      - `SSH_PUBKEY`: the public key you want to add. If you need more than one public key, paste one key per line.
 
 ## Initialize an instance
 Go to `Actions` page of the repository and choose the workflow of your desired operation system before running GitHub Actions. 
@@ -77,6 +85,47 @@ Go to `Actions` page of the repository and choose the workflow of your desired o
 5. Wait until the job proceeds to `Maintaining` step.
 6. Connect to the instance.
 
+The specific step of filling information varies with the operating system.
+
+### Ubuntu
+- Identifier
+This label is used for instances to announce and distinguish themselves with other instances. Choose arbitrarily but reasonable.
+- N2N
+You need to decide whether n2n edge is used. 
+If so, you also need to assign the remote ip address for the instance. This will be referred to later as `N2N_IP`.
+*Notice: this is different from the local ip address that you assigned on your own computer.*
+- FRP
+You need to decide whether frpc is used. 
+If so, you also need to Specify the remote SSH port for frp. This will be referred to later as `FRP_SSH_PORT`.
+- Personal SSH public key
+You may deploy your persoanl SSH public key for authentication. Make sure that the corresponding secret has been added to the repository. 
+- Static host key
+Normally, the host key changes each time an instance is initialized. You have to manually delete the related information in the local file `~/.ssh/known_hosts` otherwise the connection is refused to prevent man-in-the-middle attack. If you choose to deploy a static host key, the host key will remain the same each time an instance is initialized and it makes it easier for you to connect.
+
+### Windows
+- Identifier
+This label is used for instances to announce and distinguish themselves with other instances. Choose arbitrarily but reasonable.
+- N2N
+You need to decide whether n2n edge is used. 
+If so, you also need to assign the remote ip address for the instance. This will be referred to later as `N2N_IP`.
+*Notice: this is different from the local ip address that you assigned on your own computer.*
+- FRP
+You need to decide whether frpc is used. 
+If so, you also need to Specify the remote SSH port for frp and the remote RDP port for frp. These will be referred to later as `FRP_SSH_PORT` and `FRP_RDP_PORT`.
+- Personal SSH public key
+You may deploy your persoanl SSH public key for authentication. Make sure that the corresponding secret has been added to the repository. 
+- Static host key
+Normally, the host key changes each time an instance is initialized. You have to manually delete the related information in the local file `~/.ssh/known_hosts` otherwise the connection is refused to prevent man-in-the-middle attack. If you choose to deploy a static host key, the host key will remain the same each time an instance is initialized and it makes it easier for you to connect.
+
+### MacOS
+- Identifier
+This label is used for instances to announce and distinguish themselves with other instances. Choose arbitrarily but reasonable.
+- FRP
+You need to decide whether frpc is used. 
+If so, you also need to Specify the remote SSH port for frp. This will be referred to later as `FRP_SSH_PORT`.
+- Personal SSH public key
+You may deploy your persoanl SSH public key for authentication. Make sure that the corresponding secret has been added to the repository. 
+Notice: you can only use publickey to authenticate and login to SSH on MacOS.
 ## Connect to the instances
 - via SSH (ALL)
   - command:
