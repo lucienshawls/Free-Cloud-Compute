@@ -125,7 +125,7 @@ You need to decide whether frpc is used.
 If so, you also need to Specify the remote SSH port for frp. This will be referred to later as `FRP_SSH_PORT`.
 - Personal SSH public key
 You may deploy your persoanl SSH public key for authentication. Make sure that the corresponding secret has been added to the repository. 
-Notice: you can only use publickey to authenticate and login to SSH on MacOS.
+*Notice: you can only use publickey to authenticate and login to SSH on MacOS.*
 ## Connect to the instances
 - via SSH (ALL)
   - command:
