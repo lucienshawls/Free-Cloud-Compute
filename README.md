@@ -45,7 +45,7 @@ Add the following GitHub Actions repository secrets:
       ```shell
       ./egde -c <N2N_COMMUNITY> -l <N2N_SUPERNODE_HOST>:<N2N_SERVER_PORT> -a <local intranet ip> -k <N2N_KEY> -A3
       ```
-      Please replace variables (surrounded with <>) with your own settings.
+      Please replace variables (surrounded with <>) with corresponding values.
 ### Use frp
 frp has two elements: frpc (client) that runs on the instance and frps (server) that runs on a server with a public ip address. 
 
@@ -125,17 +125,97 @@ You need to decide whether frpc is used.
 If so, you also need to Specify the remote SSH port for frp. This will be referred to later as `FRP_SSH_PORT`.
 - Personal SSH public key
 You may deploy your persoanl SSH public key for authentication. Make sure that the corresponding secret has been added to the repository. 
-*Notice: you can only use publickey to authenticate and login to SSH on MacOS.*
+*Notice: you can only use publickeys to authenticate and login to SSH on MacOS.*
 ## Connect to the instances
-- via SSH (ALL)
-  - command:
+If you see a variable surrounded by angle brackets like `<variable>`, replace the brackets and the variable with the corresponding value.
+
+If you see something surrounded by square brakets like `[expression]`, you can decide whether to keep or ignore the expression based on your condition.
+
+If you see something separated by pipe character and surrounded by angle brackets like `<A|B>`, you will need to choose one to keep. 
+*Notice: in this case, neither of A and B is surrounded by brackets directly, so keep them as they are.*
+### Ubuntu
+- General info
+  - Users
+    - User: `root`
+      - Description: super admin account
+      - Password: (None)
+    - User: `runner`
+      - Description: the account that GitHub Actions use to run workflows. It can run `sudo` without passwords.
+      - Password: (None)
+  - SSH service
+    - Port: `22` (default)
+    - PermitRootLogin: `yes`
+    - PermitEmptyPasswords: `yes`
+- Connect via SSH
+  - via n2n
     ```shell
-    ssh root@<IP>
+    ssh <root|runner>@<N2N_IP> [-i </path/to/your/privkey/named/id_rsa>]
     ```
-  - Password: (None)
-  - Port: `22`
-- via RDP (Windows)
-  - Computer: `<IP>`
-  - Username: `root`
-  - Password: (None)
-  - Port: `3389`
+  - via frp
+    ```shell
+    ssh <root|runner>@<FRP_SERVER_ADDR> -p <FRP_SSH_PORT> [-i </path/to/your/privkey/named/id_rsa>]
+    ```
+### Windows
+- General info
+  - Users
+    - User: `runneradmin`
+      - Description: built-in admin account (name changed from `Administrator`), the account that GitHub Actions use to run workflows. It can run programs as admin without UAC.
+      - Password: (None)
+      *Notice: if you login with this account remotely with RDP, do not try to close the command window on the desktop, otherwise the workflow is terminated and the instance is destroyed.*
+    - User: `root`
+      - Description: a new admin account. 
+      - Password: (None)
+      *Notice: since the user profile has not been initialized when you first login with this newly added account, it may take a long time for the instance to prepare user files. **Connect first with RDP is recommended.***
+  - Security policies
+    - Require complex passwords: `no`
+    - Deny remote login with users that has blank passwords: `no`
+  - SSH service
+    - Port: `22` (default)
+    - PermitEmptyPasswords: `yes`
+  - RDP service
+    - Port: `3389` (default)
+- Connect via SSH
+  - via n2n
+    ```shell
+    ssh <runneradmin|root>@<N2N_IP> [-i </path/to/your/privkey/named/id_rsa>]
+    ```
+  - via frp
+    ```shell
+    ssh <runneradmin|root>@<FRP_SERVER_ADDR> -p <FRP_SSH_PORT> [-i </path/to/your/privkey/named/id_rsa>]
+    ```
+- Connect via RDP
+  - via n2n
+    - Computer: `<N2N_IP>`
+    - Username: `runneradmin` or `root`
+    - Password: (None)
+    - Port: `3389`
+  - via frp
+    - Computer: `<FRP_SERVER_ADDR>`
+    - Username: `runneradmin` or `root`
+    - Password: (None)
+    - Port: `FRP_RDP_PORT`
+### MacOS
+- General info
+  - Users
+    - User: `root`
+      - Description: super admin account
+      - Password: (Unset and unknown)
+      *Notice: public keys are not set for root.*
+    - User: `runner`
+      - Description: the account that GitHub Actions use to run workflows. It can run `sudo` without passwords.
+      - Password: (Unset and unknown)
+      *Notice: you can only use public keys for authentication.*
+  - SSH service
+    - Port: `22` (default)
+    - PermitRootLogin: `yes`
+    - PermitEmptyPasswords: `yes`
+    - PasswordAuthentication `no`
+- Connect via SSH
+  - via n2n
+    ```shell
+    ssh <runner>@<N2N_IP> -i </path/to/your/privkey/named/id_rsa>
+    ```
+  - via frp
+    ```shell
+    ssh <runner>@<FRP_SERVER_ADDR> -p <FRP_SSH_PORT> -i </path/to/your/privkey/named/id_rsa>
+    ```
