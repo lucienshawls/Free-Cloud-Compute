@@ -10,16 +10,16 @@ To get your own free cloud compute instances, fork this repository and do the fo
 ## Preparations for remote connection
 The instance that is initialized by GitHub Actions does not have a public ip address. This calls for Intranet penetration tools. 
 
-Currently, n2n and frp are supported. 
+Currently, N2N and FRP are supported. 
 
-*Notice: n2n is not supported on MacOS.*
+*Notice: N2N is not supported on MacOS.*
 
-### Use n2n
-n2n requires two elements to work: edge nodes and a supernode.
+### Use N2N
+N2N requires two elements to work: edge nodes and a supernode.
 
 A supernode allows edge nodes to announce and discover other nodes. It must have a port publicly accessible on internet. 
 
-Edge nodes are part of the virtual networks, or a _community_. The instance that is initialized by GitHub Actions runs n2n edge (v3) automatically.
+Edge nodes are part of the virtual networks, or a _community_. The instance that is initialized by GitHub Actions runs N2N edge (v3) automatically.
 
 **You will need...**
 1. A supernode. You can build a supernode on a server with a public ip address or simply find public supernodes provided by others.
@@ -43,29 +43,29 @@ Add the following GitHub Actions repository secrets:
    2. Go to [lucktu/n2n](https://github.com/lucktu/n2n) to download the compiled binary programs of edge.
    3. Change directory to where edge is located, and start edge on your own computer with the following command:
       ```shell
-      ./egde -c <N2N_COMMUNITY> -l <N2N_SUPERNODE_HOST>:<N2N_SERVER_PORT> -a <local intranet ip> -k <N2N_KEY> -A3
+      ./egde -c <N2N_COMMUNITY> -l <N2N_SUPERNODE_HOST>:<N2N_SERVER_PORT> -a <LOCAL_INTRANET_IP> -k <N2N_KEY> -A3
       ```
-      Please replace variables (surrounded with <>) with corresponding values.
-### Use frp
-frp has two elements: frpc (client) that runs on the instance and frps (server) that runs on a server with a public ip address. 
+      Please replace variables (surrounded with <>) with corresponding values and remove brackets.
+### Use FRP
+FRP has two elements: FRPC (client) that runs on the instance and FRPS (server) that runs on a server with a public ip address. 
 
-When you access a certain port on the computer running frps, the data is then routed to a certain port of the computer that runs frpc.
+When you access a certain port on the computer running FRPS, the data is then routed to a certain port of the computer that runs FRPC.
 
 Fortunately, you will not need to run anything on your own computer.
 
 Unfortunately, you will have to assign different ports for every service on the instance. But do not worry, this repository has done everything.
 
 **You will need...**
-1. A server that runs frps. It would be better when the version of frps is above or equal to `v0.44.0`.
+1. A server that runs FRPS. It would be better when the version of FRPS is above or equal to `v0.44.0`.
 
-*Notice: a token for authentication is mandatory for security reasons. Please make sure that the frps needs a token.*
+*Notice: a token for authentication is mandatory for security reasons. Please make sure that the FRPS needs a token.*
 
 **What you should do before connecting to the instances:**
-1. Set up frp info and token.
+1. Set up FRP info and token.
 Add the following GitHub Actions repository secrets:
-    - `FRP_SERVER_ADDR`: the server host or address of frps.
-    - `FRP_SERVER_PORT`: the server port of frps for connections with frpc
-    - `FRP_TOKEN`: token for authentication (specified in the config file of frps).
+    - `FRP_SERVER_ADDR`: the server host or address of FRPS.
+    - `FRP_SERVER_PORT`: the server port of FRPS for connections with FRPC
+    - `FRP_TOKEN`: token for authentication (specified in the config file of FRPS).
 ### Other preparations
 - Personal SSH public key
   You can add persoanl SSH public keys to the instances so that you may use public key to authorize SSH login.
@@ -91,12 +91,12 @@ The specific step of filling information varies with the operating system.
 - Identifier
 This label is used for instances to announce and distinguish themselves with other instances. Choose arbitrarily but reasonable.
 - N2N
-You need to decide whether n2n edge is used. 
+You need to decide whether N2N edge is used. 
 If so, you also need to assign the remote ip address for the instance. This will be referred to later as `N2N_IP`.
 *Notice: this is different from the local ip address that you assigned on your own computer.*
 - FRP
-You need to decide whether frpc is used. 
-If so, you also need to Specify the remote SSH port for frp. This will be referred to later as `FRP_SSH_PORT`.
+You need to decide whether FRPC is used. 
+If so, you also need to Specify the remote SSH port for FRP. This will be referred to later as `FRP_SSH_PORT`.
 - Personal SSH public key
 You may deploy your persoanl SSH public key for authentication. Make sure that the corresponding secret has been added to the repository. 
 - Static host key
@@ -106,12 +106,12 @@ Normally, the host key changes each time an instance is initialized. You have to
 - Identifier
 This label is used for instances to announce and distinguish themselves with other instances. Choose arbitrarily but reasonable.
 - N2N
-You need to decide whether n2n edge is used. 
+You need to decide whether N2N edge is used. 
 If so, you also need to assign the remote ip address for the instance. This will be referred to later as `N2N_IP`.
 *Notice: this is different from the local ip address that you assigned on your own computer.*
 - FRP
-You need to decide whether frpc is used. 
-If so, you also need to Specify the remote SSH port for frp and the remote RDP port for frp. These will be referred to later as `FRP_SSH_PORT` and `FRP_RDP_PORT`.
+You need to decide whether FRPC is used. 
+If so, you also need to Specify the remote SSH port for FRP and the remote RDP port for FRP. These will be referred to later as `FRP_SSH_PORT` and `FRP_RDP_PORT`.
 - Personal SSH public key
 You may deploy your persoanl SSH public key for authentication. Make sure that the corresponding secret has been added to the repository. 
 - Static host key
@@ -121,8 +121,8 @@ Normally, the host key changes each time an instance is initialized. You have to
 - Identifier
 This label is used for instances to announce and distinguish themselves with other instances. Choose arbitrarily but reasonable.
 - FRP
-You need to decide whether frpc is used. 
-If so, you also need to Specify the remote SSH port for frp. This will be referred to later as `FRP_SSH_PORT`.
+You need to decide whether FRPC is used. 
+If so, you also need to Specify the remote SSH port for FRP. This will be referred to later as `FRP_SSH_PORT`.
 - Personal SSH public key
 You may deploy your persoanl SSH public key for authentication. Make sure that the corresponding secret has been added to the repository. 
 *Notice: you can only use publickeys to authenticate and login to SSH on MacOS.*
@@ -147,11 +147,11 @@ If you see something separated by pipe character and surrounded by angle bracket
     - PermitRootLogin: `yes`
     - PermitEmptyPasswords: `yes`
 - Connect via SSH
-  - via n2n
+  - Use N2N
     ```shell
     ssh <root|runner>@<N2N_IP> [-i </path/to/your/privkey/named/id_rsa>]
     ```
-  - via frp
+  - Use FRP
     ```shell
     ssh <root|runner>@<FRP_SERVER_ADDR> -p <FRP_SSH_PORT> [-i </path/to/your/privkey/named/id_rsa>]
     ```
@@ -175,21 +175,21 @@ If you see something separated by pipe character and surrounded by angle bracket
   - RDP service
     - Port: `3389` (default)
 - Connect via SSH
-  - via n2n
+  - Use N2N
     ```shell
     ssh <runneradmin|root>@<N2N_IP> [-i </path/to/your/privkey/named/id_rsa>]
     ```
-  - via frp
+  - Use FRP
     ```shell
     ssh <runneradmin|root>@<FRP_SERVER_ADDR> -p <FRP_SSH_PORT> [-i </path/to/your/privkey/named/id_rsa>]
     ```
 - Connect via RDP
-  - via n2n
+  - Use N2N
     - Computer: `<N2N_IP>`
     - Username: `runneradmin` or `root`
     - Password: (None)
     - Port: `3389`
-  - via frp
+  - Use FRP
     - Computer: `<FRP_SERVER_ADDR>`
     - Username: `runneradmin` or `root`
     - Password: (None)
@@ -211,11 +211,11 @@ If you see something separated by pipe character and surrounded by angle bracket
     - PermitEmptyPasswords: `yes`
     - PasswordAuthentication `no`
 - Connect via SSH
-  - via n2n
+  - Use N2N
     ```shell
     ssh <runner>@<N2N_IP> -i </path/to/your/privkey/named/id_rsa>
     ```
-  - via frp
+  - Use FRP
     ```shell
     ssh <runner>@<FRP_SERVER_ADDR> -p <FRP_SSH_PORT> -i </path/to/your/privkey/named/id_rsa>
     ```
