@@ -31,11 +31,13 @@ For more information, please visit [ntop/n2n](https://github.com/ntop/n2n).
 
 **What you should do before connecting to the instances:**
 1. Find an available supernode and set up supernode info on GitHub.
-Add the following GitHub Actions repository secrets:
+
+   Add the following GitHub Actions repository secrets:
     - `N2N_SUPERNODE_HOST`: the host or ip address of the supernode.
     - `N2N_SUPERNODE_PORT`: the port of the supernode.
-2. Set up edge info. The instance will use the information below to join the virtual network.
-Add the following GitHub Actions repository secrets:
+1. Set up edge info. The instance will use the information below to join the virtual network.
+
+   Add the following GitHub Actions repository secrets:
     - `N2N_COMMUNITY`: the community name of intranet created by N2N. It can be arbitrarily assigned unless the supernode has restrictions.
     - `N2N_KEY`: the secret key for AES encryption. It can be set arbitrarily.
 3. Run edge and connect to the supernode on your personal computer.
@@ -58,17 +60,20 @@ Unfortunately, you will have to assign different ports for every service on the 
 **You will need...**
 1. A server that runs FRPS. It would be better when the version of FRPS is above or equal to `v0.44.0`.
 
-*Notice: a token for authentication is mandatory for security reasons. Please make sure that the FRPS needs a token.*
+   *Notice: a token for authentication is mandatory for security reasons. Please make sure that the FRPS needs a token.*
 
 **What you should do before connecting to the instances:**
 1. Set up FRP info and token.
-Add the following GitHub Actions repository secrets:
+
+   Add the following GitHub Actions repository secrets:
     - `FRP_SERVER_ADDR`: the server host or address of FRPS.
     - `FRP_SERVER_PORT`: the server port of FRPS for connections with FRPC
     - `FRP_TOKEN`: token for authentication (specified in the config file of FRPS).
 ### Other preparations
 - Personal SSH public key
+
   You can add persoanl SSH public keys to the instances so that you may use public key to authorize SSH login.
+
   To deploy personal public keys, please do the following.
   1. Generate an SSH key pair using command `ssh-keygen`. Ignore this step and proceed if you have already have a pair.
   2. Copy all contents from file `id_rsa.pub` or public key files (`*.pub`) with other names. This is your public key.
@@ -85,7 +90,7 @@ Go to `Actions` page of the repository and choose the workflow of your desired o
 5. Wait until the job proceeds to `Maintaining` step.
 6. Connect to the instance.
 
-The specific step of filling information varies with the operating system.
+The specific step of filling in information varies with the operating system.
 
 ### Ubuntu
 - Identifier
