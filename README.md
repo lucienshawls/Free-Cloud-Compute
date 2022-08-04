@@ -1,23 +1,23 @@
 # Free Cloud Compute
 Initialize an instance using GitHub Actions, hold the workflow, and connect to it remotely via SSH or RDP (Windows).
 
-Remote connection is made possible by [ntop/n2n](https://github.com/ntop/n2n) and [fatedier/frp](https://github.com/fatedier/frp). 
+Remote connection is made possible by [ntop/n2n](https://github.com/ntop/n2n) and [fatedier/frp](https://github.com/fatedier/frp).
 
 *Notice: the instance will last for at most 6 hours due to restrictions made by GitHub.*
 
 To get your own free cloud compute instances, fork this repository and do the following.
 
 ## Preparations for remote connection
-The instance that is initialized by GitHub Actions does not have a public ip address. This calls for Intranet penetration tools. 
+The instance that is initialized by GitHub Actions does not have a public ip address. This calls for Intranet penetration tools.
 
-Currently, N2N and FRP are supported. 
+Currently, N2N and FRP are supported.
 
 *Notice: N2N is not supported on MacOS.*
 
 ### Use N2N
 N2N requires two elements to work: edge nodes and a supernode.
 
-A supernode allows edge nodes to announce and discover other nodes. It must have a port publicly accessible on internet. 
+A supernode allows edge nodes to announce and discover other nodes. It must have a port publicly accessible on internet.
 
 Edge nodes are part of the virtual networks, or a _community_. The instance that is initialized by GitHub Actions runs N2N edge (v3) automatically.
 
@@ -47,7 +47,7 @@ Add the following GitHub Actions repository secrets:
       ```
       Please replace variables (surrounded with <>) with corresponding values and remove brackets.
 ### Use FRP
-FRP has two elements: FRPC (client) that runs on the instance and FRPS (server) that runs on a server with a public ip address. 
+FRP has two elements: FRPC (client) that runs on the instance and FRPS (server) that runs on a server with a public ip address.
 
 When you access a certain port on the computer running FRPS, the data is then routed to a certain port of the computer that runs FRPC.
 
@@ -76,7 +76,7 @@ Add the following GitHub Actions repository secrets:
       - `SSH_PUBKEY`: the public key you want to add. If you need more than one public key, paste one key per line.
 
 ## Initialize an instance
-Go to `Actions` page of the repository and choose the workflow of your desired operation system before running GitHub Actions. 
+Go to `Actions` page of the repository and choose the workflow of your desired operation system before running GitHub Actions.
 ### General steps
 1. Click on `Run workflow` button.
 2. Fill in the information.
@@ -89,50 +89,82 @@ The specific step of filling information varies with the operating system.
 
 ### Ubuntu
 - Identifier
-This label is used for instances to announce and distinguish themselves with other instances. Choose arbitrarily but reasonable.
+
+  This label is used for instances to announce and distinguish themselves with other instances. Choose arbitrarily but reasonable.
+
 - N2N
-You need to decide whether N2N edge is used. 
-If so, you also need to assign the remote ip address for the instance. This will be referred to later as `N2N_IP`.
-*Notice: this is different from the local ip address that you assigned on your own computer.*
+
+  You need to decide whether N2N edge is used.
+
+  If so, you also need to assign the remote ip address for the instance. This will be referred to later as `N2N_IP`.
+
+  *Notice: this is different from the local ip address that you assigned on your own computer.*
 - FRP
-You need to decide whether FRPC is used. 
-If so, you also need to Specify the remote SSH port for FRP. This will be referred to later as `FRP_SSH_PORT`.
+
+  You need to decide whether FRPC is used.
+
+  If so, you also need to Specify the remote SSH port for FRP. This will be referred to later as `FRP_SSH_PORT`.
+
 - Personal SSH public key
-You may deploy your persoanl SSH public key for authentication. Make sure that the corresponding secret has been added to the repository. 
+  You may deploy your persoanl SSH public key for authentication. Make sure that the corresponding secret has been added to the repository.
+
 - Static host key
-Normally, the host key changes each time an instance is initialized. You have to manually delete the related information in the local file `~/.ssh/known_hosts` otherwise the connection is refused to prevent man-in-the-middle attack. If you choose to deploy a static host key, the host key will remain the same each time an instance is initialized and it makes it easier for you to connect.
+
+  Normally, the host key changes each time an instance is initialized. You have to manually delete the related information in the local file `~/.ssh/known_hosts` otherwise the connection is refused to prevent man-in-the-middle attack. 
+
+  If you choose to deploy a static host key, the host key will remain the same each time an instance is initialized and it makes it easier for you to connect.
 
 ### Windows
 - Identifier
-This label is used for instances to announce and distinguish themselves with other instances. Choose arbitrarily but reasonable.
+
+  This label is used for instances to announce and distinguish themselves with other instances. Choose arbitrarily but reasonable.
+
 - N2N
-You need to decide whether N2N edge is used. 
-If so, you also need to assign the remote ip address for the instance. This will be referred to later as `N2N_IP`.
-*Notice: this is different from the local ip address that you assigned on your own computer.*
+
+  You need to decide whether N2N edge is used.
+
+  If so, you also need to assign the remote ip address for the instance. This will be referred to later as `N2N_IP`.
+
+  *Notice: this is different from the local ip address that you assigned on your own computer.*
+
 - FRP
-You need to decide whether FRPC is used. 
-If so, you also need to Specify the remote SSH port for FRP and the remote RDP port for FRP. These will be referred to later as `FRP_SSH_PORT` and `FRP_RDP_PORT`.
+  You need to decide whether FRPC is used.
+
+  If so, you also need to Specify the remote SSH port for FRP and the remote RDP port for FRP. These will be referred to later as `FRP_SSH_PORT` and `FRP_RDP_PORT`.
+
 - Personal SSH public key
-You may deploy your persoanl SSH public key for authentication. Make sure that the corresponding secret has been added to the repository. 
+
+  You may deploy your persoanl SSH public key for authentication. Make sure that the corresponding secret has been added to the repository.
+
 - Static host key
-Normally, the host key changes each time an instance is initialized. You have to manually delete the related information in the local file `~/.ssh/known_hosts` otherwise the connection is refused to prevent man-in-the-middle attack. If you choose to deploy a static host key, the host key will remain the same each time an instance is initialized and it makes it easier for you to connect.
+
+  Normally, the host key changes each time an instance is initialized. You have to manually delete the related information in the local file `~/.ssh/known_hosts` otherwise the connection is refused to prevent man-in-the-middle attack. 
+
+  If you choose to deploy a static host key, the host key will remain the same each time an instance is initialized and it makes it easier for you to connect.
 
 ### MacOS
 - Identifier
-This label is used for instances to announce and distinguish themselves with other instances. Choose arbitrarily but reasonable.
+
+  This label is used for instances to announce and distinguish themselves with other instances. Choose arbitrarily but reasonable.
 - FRP
-You need to decide whether FRPC is used. 
-If so, you also need to Specify the remote SSH port for FRP. This will be referred to later as `FRP_SSH_PORT`.
+
+  You need to decide whether FRPC is used.
+
+  If so, you also need to Specify the remote SSH port for FRP. This will be referred to later as `FRP_SSH_PORT`.
+
 - Personal SSH public key
-You may deploy your persoanl SSH public key for authentication. Make sure that the corresponding secret has been added to the repository. 
-*Notice: you can only use publickeys to authenticate and login to SSH on MacOS.*
+
+  You may deploy your persoanl SSH public key for authentication. Make sure that the corresponding secret has been added to the repository.
+
+  *Notice: you can only use publickeys to authenticate and login to SSH on MacOS.*
+
 ## Connect to the instances
-If you see a variable surrounded by angle brackets like `<variable>`, replace the brackets and the variable with the corresponding value.
+  If you see a variable surrounded by angle brackets like `<variable>`, replace the brackets and the variable with the corresponding value.
 
-If you see something surrounded by square brakets like `[expression]`, you can decide whether to keep or ignore the expression based on your condition.
+  If you see something surrounded by square brakets like `[expression]`, you can decide whether to keep or ignore the expression based on your condition.
 
-If you see something separated by pipe character and surrounded by angle brackets like `<A|B>`, you will need to choose one to keep. 
-*Notice: in this case, neither of A and B is surrounded by brackets directly, so keep them as they are.*
+  If you see something separated by pipe character and surrounded by angle brackets like `<A|B>`, you will need to choose one to keep.
+  *Notice: in this case, neither of A and B is surrounded by brackets directly, so keep them as they are.*
 ### Ubuntu
 - General info
   - Users
@@ -161,14 +193,16 @@ If you see something separated by pipe character and surrounded by angle bracket
     - User: `runneradmin`
       - Description: built-in admin account (name changed from `Administrator`), the account that GitHub Actions use to run workflows. It can run programs as admin without UAC.
       - Password: (None)
+      
       *Notice: if you login with this account remotely with RDP, do not try to close the command window on the desktop, otherwise the workflow is terminated and the instance is destroyed.*
     - User: `root`
-      - Description: a new admin account. 
+      - Description: a new admin account.
       - Password: (None)
+      
       *Notice: since the user profile has not been initialized when you first login with this newly added account, it may take a long time for the instance to prepare user files. **Connect first with RDP is recommended.***
   - Security policies
     - Require complex passwords: `no`
-    - Deny remote login with users that has blank passwords: `no`
+    - Deny remote login with users that have blank passwords: `no`
   - SSH service
     - Port: `22` (default)
     - PermitEmptyPasswords: `yes`
@@ -200,6 +234,7 @@ If you see something separated by pipe character and surrounded by angle bracket
     - User: `root`
       - Description: super admin account
       - Password: (Unset and unknown)
+      
       *Notice: public keys are not set for root.*
     - User: `runner`
       - Description: the account that GitHub Actions use to run workflows. It can run `sudo` without passwords.
@@ -211,10 +246,6 @@ If you see something separated by pipe character and surrounded by angle bracket
     - PermitEmptyPasswords: `yes`
     - PasswordAuthentication `no`
 - Connect via SSH
-  - Use N2N
-    ```shell
-    ssh <runner>@<N2N_IP> -i </path/to/your/privkey/named/id_rsa>
-    ```
   - Use FRP
     ```shell
     ssh <runner>@<FRP_SERVER_ADDR> -p <FRP_SSH_PORT> -i </path/to/your/privkey/named/id_rsa>
