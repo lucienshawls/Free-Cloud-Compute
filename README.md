@@ -89,6 +89,7 @@ Go to `Actions` page of the repository and choose the workflow of your desired o
 4. Refresh the page and view logs of job `Initialize XXXXXX-Latest Instance`.
 5. Wait until the job proceeds to `Maintaining` step.
 6. Connect to the instance.
+7. Read the guidelines from step `Prepare the self-destruct trigger` (if exists) and normally terminate the instance.
 
 The specific step of filling in information varies with the operating system.
 
@@ -193,6 +194,7 @@ The specific step of filling in information varies with the operating system.
     ssh <root|runner>@<FRP_SERVER_ADDR> -p <FRP_SSH_PORT> [-i </path/to/your/privkey/named/id_rsa>]
     ```
 ### Windows
+*Notice: you can restart the instances running Windows and the instance will boot normally and available for you to connect, but it will be terminated a few minutes later.*
 - General info
   - Users
     - User: `runneradmin`
