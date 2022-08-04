@@ -239,6 +239,7 @@ The specific step of filling information varies with the operating system.
     - User: `runner`
       - Description: the account that GitHub Actions use to run workflows. It can run `sudo` without passwords.
       - Password: (Unset and unknown)
+      
       *Notice: you can only use public keys for authentication.*
   - SSH service
     - Port: `22` (default)
