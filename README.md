@@ -8,7 +8,7 @@ Remote connection is made possible by [ntop/n2n](https://github.com/ntop/n2n) an
 To get your own free cloud compute instances, fork this repository and do the following.
 
 ## Preparations for remote connection
-The instance that is initialized by GitHub Actions does not have a public ip address. This calls for Intranet penetration tools.
+The instance which is initialized by GitHub Actions does not have a public ip address. This calls for Intranet penetration tools.
 
 Currently, N2N and FRP are supported.
 
@@ -75,8 +75,8 @@ Unfortunately, you will have to assign different ports for every service on the 
   You can add persoanl SSH public keys to the instances so that you may use public key to authorize SSH login.
 
   To deploy personal public keys, please do the following.
-  1. Generate an SSH key pair using command `ssh-keygen`. Ignore this step and proceed if you have already have a pair.
-  2. Copy all contents from file `id_rsa.pub` or public key files (`*.pub`) with other names. This is your public key.
+  1. Generate an SSH key pair using command `ssh-keygen`. Ignore this step and proceed if you have already got a pair.
+  2. Copy all contents from file `id_rsa.pub` or public key files with other names (`*.pub`). This string is your public key.
   3. Add this GitHub Actions repository secret:
       - `SSH_PUBKEY`: the public key you want to add. If you need more than one public key, paste one key per line.
 
@@ -109,9 +109,10 @@ The specific step of filling in information varies with the operating system.
 
   You need to decide whether FRPC is used.
 
-  If so, you also need to Specify the remote SSH port for FRP. This will be referred to later as `FRP_SSH_PORT`.
+  If so, you also need to specify the remote SSH port for FRP. This will be referred to later as `FRP_SSH_PORT`.
 
 - Personal SSH public key
+
   You may deploy your persoanl SSH public key for authentication. Make sure that the corresponding secret has been added to the repository.
 
 - Static host key
@@ -134,9 +135,10 @@ The specific step of filling in information varies with the operating system.
   *Notice: this is different from the local ip address that you assigned on your own computer.*
 
 - FRP
+  
   You need to decide whether FRPC is used.
 
-  If so, you also need to Specify the remote SSH port for FRP and the remote RDP port for FRP. These will be referred to later as `FRP_SSH_PORT` and `FRP_RDP_PORT`.
+  If so, you also need to specify the remote SSH port for FRP and the remote RDP port for FRP. These will be referred to later as `FRP_SSH_PORT` and `FRP_RDP_PORT`.
 
 - Personal SSH public key
 
@@ -169,8 +171,8 @@ The specific step of filling in information varies with the operating system.
 
   If you see something surrounded by square brakets like `[expression]`, you can decide whether to keep or ignore the expression based on your condition.
 
-  If you see something separated by pipe character and surrounded by angle brackets like `<A|B>`, you will need to choose one to keep.
-  *Notice: in this case, neither of A and B is surrounded by brackets directly, so keep them as they are.*
+  If you see something separated by pipe character and surrounded by angle brackets like `<A|B>`, you will need to choose one to keep.  
+  *Notice: in this case, neither of A and B is surrounded by brackets directly, so keep them as they are instead of replacing the character 'A' or 'B' with other values.*
 ### Ubuntu
 - General info
   - Users
@@ -229,12 +231,10 @@ The specific step of filling in information varies with the operating system.
     - Computer: `<N2N_IP>`
     - Username: `runneradmin` or `root`
     - Password: (None)
-    - Port: `3389`
   - Use FRP
-    - Computer: `<FRP_SERVER_ADDR>`
+    - Computer: `<FRP_SERVER_ADDR>:<FRP_RDP_PORT>`
     - Username: `runneradmin` or `root`
     - Password: (None)
-    - Port: `FRP_RDP_PORT`
 ### MacOS
 - General info
   - Users
