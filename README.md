@@ -196,7 +196,7 @@ The specific step of filling in information varies with the operating system.
     ssh <root|runner>@<FRP_SERVER_ADDR> -p <FRP_SSH_PORT> [-i </path/to/your/privkey/named/id_rsa>]
     ```
 ### Windows
-*Notice: you can restart the instances running Windows and the instance will boot normally and available for you to connect, but it will be terminated a few minutes later.*
+*Notice: you can restart the instances running Windows and the instance will boot normally in about 20 minutes and be available for you to connect, but it will be terminated in less than half an hour.*
 - General info
   - Users
     - User: `runneradmin`
